@@ -1,0 +1,1175 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>รายงานการบริหารอาคาร · สำนักงานงบประมาณ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Kanit:wght@500;600&family=Sarabun:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<style>
+:root{
+  box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
+  --navy:#14254A;--navy-2:#1F3767;--gold:#C9A227;--bronze:#A8733F;--gold-soft:#F3E7BF;
+  --bg:#EEF0F4;--surface:#FFFFFF;--surface-2:#F6F7FA;--line:#D9DDE5;--ink:#1A2233;--ink-2:#55607A;
+  --ok:#1E8E4F;--ok-bg:#E3F4EA;--warn:#B98900;--warn-bg:#FCF2CF;--wait:#6B7486;--wait-bg:#E8EAEF;--danger:#B3261E;
+  --c1:#14254A;--c2:#C9A227;--c3:#1E8E4F;--c4:#7A8394;--grid:#E3E6EC;
+  --fh:"Kanit","Sarabun",system-ui,sans-serif;--fb:"Sarabun","Leelawadee UI","Tahoma",system-ui,sans-serif;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0E1526;--surface:#172036;--surface-2:#1D2842;--line:#2C3A5A;--ink:#E8ECF4;--ink-2:#A3AEC6;--gold-soft:#3A3218;
+  --ok-bg:#163826;--warn-bg:#3A3112;--wait-bg:#283148;--ok:#4CC27F;--warn:#E3B23C;--wait:#A3AEC6;--c1:#8FA8DA;--c3:#4CC27F;--c4:#A3AEC6;--grid:#2C3A5A}}
+:root[data-theme="dark"]{
+  --bg:#0E1526;--surface:#172036;--surface-2:#1D2842;--line:#2C3A5A;--ink:#E8ECF4;--ink-2:#A3AEC6;--gold-soft:#3A3218;
+  --ok-bg:#163826;--warn-bg:#3A3112;--wait-bg:#283148;--ok:#4CC27F;--warn:#E3B23C;--wait:#A3AEC6;--c1:#8FA8DA;--c3:#4CC27F;--c4:#A3AEC6;--grid:#2C3A5A}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--fb);font-size:17px;line-height:1.55;-webkit-text-size-adjust:100%}
+img{max-width:100%}
+button,input,select,textarea{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+h1,h2,h3{font-family:var(--fh);font-weight:600;line-height:1.3;margin:0}
+
+.top{background:var(--navy);color:#fff;border-bottom:4px solid var(--gold);position:sticky;top:env(safe-area-inset-top,0px);z-index:20}
+.top-in{max-width:1080px;margin:0 auto;padding:10px 18px 0;display:flex;flex-wrap:wrap;align-items:flex-end;gap:6px 20px}
+.brand{flex:1 1 280px;display:flex;align-items:center;gap:12px;padding-bottom:10px;min-width:0}
+.brand img{height:42px;width:auto;background:#fff;border-radius:6px;padding:3px 6px}
+.brand b{font-family:var(--fh);font-weight:600;font-size:20px;display:block;line-height:1.2}
+.brand small{font-size:14px;opacity:.85}
+.mode{font-size:12px;padding:1px 9px;border-radius:99px;background:rgba(255,255,255,.14);margin-left:6px;vertical-align:middle;font-weight:500;font-family:var(--fb)}
+.tabs{display:flex;gap:2px;overflow-x:auto;max-width:100%}
+.tab{background:transparent;border:0;color:#C9D2E6;padding:9px 14px;border-radius:10px 10px 0 0;cursor:pointer;font-weight:600;white-space:nowrap;font-size:16px}
+.tab[aria-selected="true"]{background:var(--gold);color:var(--navy)}
+.tab.admin{color:var(--gold)}
+main{max-width:1080px;margin:0 auto;padding:20px 16px 120px}
+.banner{background:var(--warn-bg);border:1px solid var(--warn);border-radius:10px;padding:10px 14px;margin-bottom:16px;font-size:15px}
+.rowbar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:14px}
+.rowbar h1{font-size:24px;margin-right:auto}
+.sub{color:var(--ink-2);font-size:15px}
+
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px;margin-top:14px}
+.card h3{margin:0 0 12px;font-size:18px;border-left:6px solid var(--gold);padding-left:10px}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px 16px}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px}
+.kpi{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px 14px}
+.kpi span{display:block;font-size:14px;color:var(--ink-2)}
+.kpi b{font-family:var(--fh);font-weight:600;font-size:30px;line-height:1.25;color:var(--navy-2)}
+:root[data-theme="dark"] .kpi b{color:var(--gold)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .kpi b{color:var(--gold)}}
+.kpi b small{font-size:15px;font-family:var(--fb);color:var(--ink-2);font-weight:500;margin-left:4px}
+.kpi em{font-style:normal;font-size:13px;color:var(--ink-2);display:block}
+/* dashboard tiles in theme colours (web only; PDF keeps plain tiles) */
+:root{--k1:#14254A;--k2:#1F3767;--k3:#C9A227;--k4:#2E4A7D;--k5:#8A5A2B}
+#app .kpi{border:0;border-bottom:4px solid var(--gold);color:#fff;padding:14px 16px 12px}
+#app .kpi span{color:rgba(255,255,255,.88);font-weight:600}
+#app .kpi b{color:#fff;font-size:34px}
+#app .kpi b small,#app .kpi em{color:rgba(255,255,255,.82)}
+#app .kpi:nth-child(5n+1){background:var(--k1)}
+#app .kpi:nth-child(5n+2){background:var(--k2)}
+#app .kpi:nth-child(5n+3){background:var(--k3);border-bottom-color:var(--navy);color:var(--navy)}
+#app .kpi:nth-child(5n+3) span,#app .kpi:nth-child(5n+3) b,#app .kpi:nth-child(5n+3) b small,#app .kpi:nth-child(5n+3) em{color:#14254A}
+#app .kpi:nth-child(5n+4){background:var(--k4)}
+#app .kpi:nth-child(5n+5){background:var(--k5)}
+.charts{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:12px;margin-top:12px}
+.chart{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px 14px}
+.chart h3{font-size:16px;margin:0}
+.chart .sub{font-size:13px;margin-bottom:6px}
+.chart svg{width:100%;height:auto;display:block;color:var(--ink-2)}
+.legend{display:flex;flex-wrap:wrap;gap:4px 12px;font-size:13px;color:var(--ink-2);margin-top:4px}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:4px;vertical-align:middle}
+.issues{margin:0;padding-left:20px}
+.issues li{margin:4px 0}
+
+/* calendar */
+.cal{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px}
+.cal .dow{text-align:center;font-size:13px;color:var(--ink-2);font-weight:600}
+.cday{background:var(--surface);border:1px solid var(--line);border-radius:10px;min-height:64px;padding:6px;text-align:left;cursor:pointer;display:flex;flex-direction:column;gap:4px}
+.cday:disabled{cursor:default;opacity:.55}
+.cday.out{visibility:hidden}
+.cday.today{border-color:var(--gold);border-width:2px}
+.cday b{font-size:15px}
+.dots{display:flex;gap:4px;flex-wrap:wrap}
+.dot{font-size:11px;font-weight:700;border-radius:6px;padding:0 5px}
+.dot.ok{background:var(--ok-bg);color:var(--ok)}.dot.miss{background:transparent;color:var(--ink-2);border:1px dashed var(--line)}
+.backfill{background:var(--gold-soft);border:1px solid var(--gold);border-radius:10px;padding:10px 14px;margin-top:12px;font-size:15px}
+.datenav{display:flex;gap:6px;align-items:flex-end}.datenav .inp{flex:1}
+.tag{display:inline-block;font-size:13px;font-weight:600;border-radius:6px;padding:0 8px;background:var(--gold-soft);color:var(--ink);margin-left:6px}.dot.warn{background:var(--warn-bg);color:var(--warn)}
+@media (max-width:560px){.cday{min-height:52px;padding:4px}.cday b{font-size:13px}.dot{font-size:10px;padding:0 3px}}
+
+/* edit */
+.meta{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px;display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px 16px}
+label.f{display:flex;flex-direction:column;gap:4px;font-size:14px;color:var(--ink-2);font-weight:600}
+.inp{background:var(--surface-2);border:1px solid var(--line);border-radius:9px;padding:9px 12px;font-size:17px;color:var(--ink);width:100%}
+.meta .note{grid-column:1/-1}
+.existing{grid-column:1/-1;font-size:14px;color:var(--ink-2)}
+textarea.big{min-height:100px;resize:vertical;font-size:18px;line-height:1.5}
+.seg{display:flex;gap:4px;margin-top:16px;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:5px;overflow-x:auto}
+.seg button{flex:1 0 auto;border:0;background:transparent;padding:9px 12px;border-radius:9px;font-weight:600;cursor:pointer;color:var(--ink-2);white-space:nowrap;font-size:15px}
+.seg button[aria-selected="true"]{background:var(--navy);color:#fff}
+.seg em{font-style:normal;font-size:12px;background:var(--gold);color:var(--navy);border-radius:99px;padding:0 7px;margin-left:5px}
+.eq{display:grid;grid-template-columns:1fr auto;gap:8px 12px;align-items:center}
+.sec-h{display:flex;align-items:center;gap:12px;background:var(--navy);color:#fff;border-left:8px solid var(--gold);padding:10px 14px;border-radius:10px;margin-top:18px}
+.sec-h h2{font-size:19px;flex:1}
+.sec-h small{font-size:14px;opacity:.8;font-family:var(--fb);font-weight:500}
+.count{background:var(--gold);color:var(--navy);font-weight:700;border-radius:99px;min-width:30px;text-align:center;padding:0 8px;font-size:15px}
+.items{display:flex;flex-direction:column;gap:10px;margin-top:10px}
+.item{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px 12px 12px 14px;display:grid;grid-template-columns:30px 1fr;gap:6px 10px}
+.num{font-family:var(--fh);font-weight:600;color:var(--gold);font-size:20px;line-height:1.6}
+.item textarea{min-height:64px;resize:vertical;font-size:18px;line-height:1.5}
+.row{display:flex;flex-wrap:wrap;align-items:center;gap:8px}
+.chip{border:1.5px solid var(--line);background:var(--surface-2);border-radius:99px;padding:5px 12px;font-size:15px;cursor:pointer;font-weight:600;color:var(--ink-2)}
+.chip.ok[aria-pressed="true"]{background:var(--ok);border-color:var(--ok);color:#fff}
+.chip.warn[aria-pressed="true"]{background:var(--warn);border-color:var(--warn);color:#fff}
+.chip.wait[aria-pressed="true"]{background:var(--wait);border-color:var(--wait);color:#fff}
+.spacer{flex:1}
+.btn{border:1px solid var(--line);background:var(--surface);border-radius:9px;padding:7px 14px;cursor:pointer;font-weight:600;font-size:15px;display:inline-flex;align-items:center;gap:6px;color:var(--ink)}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.btn.pri{background:var(--navy);color:#fff;border-color:var(--navy)}
+.btn.gold{background:var(--gold);color:var(--navy);border-color:var(--gold)}
+.btn.ghost{background:transparent;border-color:transparent;color:var(--ink-2)}
+.btn.sm{padding:5px 10px;font-size:14px}
+.btn.del{color:var(--danger)}
+.add{margin-top:10px;width:100%;border:2px dashed var(--line);background:transparent;border-radius:12px;padding:10px;cursor:pointer;color:var(--ink-2);font-weight:600}
+.add:hover{border-color:var(--gold);color:var(--ink)}
+.media{display:flex;flex-wrap:wrap;gap:8px}
+.thumb{position:relative;width:96px;height:96px;border-radius:9px;overflow:hidden;border:1px solid var(--line);background:var(--surface-2);display:flex;align-items:center;justify-content:center;text-align:center;font-size:12px;color:var(--ink-2);padding:0}
+.thumb img{width:100%;height:100%;object-fit:cover;display:block;cursor:zoom-in}
+.thumb .x{position:absolute;top:3px;right:3px;width:24px;height:24px;border-radius:50%;border:0;background:rgba(0,0,0,.65);color:#fff;cursor:pointer;font-size:14px;line-height:24px;padding:0}
+.file-a{color:inherit;text-decoration:none;padding:6px;display:flex;flex-direction:column;align-items:center;gap:2px;word-break:break-all}
+.file-a b{font-size:22px}
+.prog-wrap{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:14px 16px;margin-top:14px}
+.prog{height:10px;background:var(--wait-bg);border-radius:99px;overflow:hidden;margin-top:8px}
+.prog i{display:block;height:100%;background:var(--ok)}
+.slot{background:var(--surface);border:1px solid var(--line);border-radius:14px;margin-top:14px;overflow:hidden}
+.slot-h{background:var(--navy);color:#fff;padding:8px 14px;font-family:var(--fh);font-weight:600;font-size:17px;display:flex;gap:10px;align-items:center;border-left:8px solid var(--gold)}
+.slot-h span{flex:1}
+.slot-h small{font-family:var(--fb);font-size:14px;opacity:.85;font-weight:500}
+.rrow{display:grid;grid-template-columns:1fr auto;gap:6px 12px;padding:10px 14px;border-top:1px solid var(--line)}
+.rrow:first-of-type{border-top:0}
+.rrow.is-ok{background:color-mix(in srgb,var(--ok-bg) 55%,transparent)}
+.rrow.is-issue{background:color-mix(in srgb,var(--warn-bg) 70%,transparent)}
+.rtext{font-size:17px;line-height:1.45}
+.fl{display:inline-block;font-size:13px;color:var(--ink-2);border:1px solid var(--line);border-radius:6px;padding:0 6px;margin-left:6px;font-weight:600;white-space:nowrap}
+.rctl{display:flex;gap:6px;align-items:center;flex-wrap:wrap;justify-content:flex-end}
+.rmore{grid-column:1/-1;display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.rmore .inp{flex:1 1 220px;padding:6px 10px;font-size:15px}
+.rmore .rtime{flex:0 0 120px}
+.savebar{position:fixed;left:0;right:0;bottom:0;background:var(--surface);border-top:1px solid var(--line);padding:10px 16px calc(10px + env(safe-area-inset-bottom,0px));z-index:15;box-shadow:0 -6px 20px rgba(20,37,74,.08)}
+.savebar-in{max-width:1080px;margin:0 auto;display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.state{font-size:14px;color:var(--ink-2);margin-right:auto}
+.state.dirty{color:var(--warn);font-weight:600}
+
+/* view */
+.vitem{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px 14px;display:grid;grid-template-columns:30px 1fr;gap:6px 10px}
+.vtext{font-size:18px;white-space:pre-wrap}
+.badge{display:inline-block;font-weight:700;border-radius:8px;padding:2px 12px;font-size:15px}
+.badge.ok{background:var(--ok);color:#fff}.badge.warn{background:var(--warn);color:#fff}.badge.wait{background:var(--wait);color:#fff}
+.vhead{background:var(--surface);border:1px solid var(--line);border-left:6px solid var(--gold);border-radius:12px;padding:14px 16px}
+.vhead h2{font-size:22px}
+.vhead div{color:var(--ink-2)}
+.kv{display:grid;grid-template-columns:auto 1fr;gap:4px 14px;font-size:17px;margin:0}
+.kv dt{color:var(--ink-2);font-weight:600}.kv dd{margin:0;white-space:pre-wrap}
+.shifttabs{display:flex;gap:6px;margin:12px 0}
+.empty{text-align:center;padding:40px 16px;color:var(--ink-2)}
+.empty b{display:block;color:var(--ink);font-size:19px;margin-bottom:6px}
+
+.lb{position:fixed;inset:0;background:rgba(5,10,22,.92);z-index:50;display:none;align-items:center;justify-content:center;padding:20px}
+.lb.on{display:flex}
+.lb img{max-height:100%;max-width:100%;object-fit:contain;border-radius:6px}
+.lb button{position:absolute;top:calc(14px + env(safe-area-inset-top,0px));right:14px;background:#fff;border:0;border-radius:50%;width:40px;height:40px;font-size:20px;cursor:pointer}
+.toast{position:fixed;left:50%;bottom:calc(90px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--navy);color:#fff;padding:10px 18px;border-radius:10px;z-index:60;font-size:15px;opacity:0;pointer-events:none;transition:opacity .2s;border-bottom:3px solid var(--gold);max-width:90vw}
+.toast.on{opacity:1}
+.busy{position:fixed;inset:0;background:var(--bg);z-index:65;display:none;align-items:center;justify-content:center;flex-direction:column;gap:10px;font-size:18px;font-weight:600;color:var(--ink)}
+.busy.on{display:flex}
+.thumb.broken{font-size:12px;padding:6px}
+.modal{position:fixed;inset:0;background:rgba(5,10,22,.6);z-index:70;display:none;align-items:center;justify-content:center;padding:20px}
+.modal.on{display:flex}
+.modal .box{background:var(--surface);color:var(--ink);border-radius:14px;padding:20px;width:min(380px,100%);border-top:5px solid var(--gold);box-shadow:0 20px 50px rgba(0,0,0,.3)}
+.modal h2{font-size:20px;margin-bottom:6px}
+.modal .pin{font-size:28px;letter-spacing:.4em;text-align:center;font-family:var(--fh)}
+.modal .err{color:var(--danger);font-size:14px;min-height:20px;margin-top:6px}
+.adminbtn{border-color:var(--gold)}
+.contract{margin-top:0;margin-bottom:16px;border-top:4px solid var(--navy)}
+.cgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px 20px;margin-top:10px}
+.cgrid span{display:block;font-size:13px;color:var(--ink-2);font-weight:600}
+.cgrid b{font-family:var(--fh);font-size:22px}
+.cgrid b small{font-family:var(--fb);font-size:14px;color:var(--ink-2);font-weight:500}
+details.imp{background:var(--surface);border:1px solid var(--gold);border-radius:14px;padding:12px 16px;margin-top:14px}
+details.imp summary{cursor:pointer;font-weight:700;font-family:var(--fh);font-size:17px}
+details.imp[open] summary{margin-bottom:8px}
+.pk{width:100%;border-collapse:collapse;font-size:16px}
+.pk th,.pk td{border-bottom:1px solid var(--line);padding:6px 6px;text-align:left}
+.pk th{color:var(--ink-2);font-size:14px;font-weight:600}
+.pk td.n,.pk th.n{text-align:right;white-space:nowrap}
+.pk input{width:100%;min-width:56px;padding:6px 8px;font-size:17px;color:var(--ink)}
+.pk td:first-child input{max-width:120px}
+.pk input.qty{text-align:right;max-width:110px}
+.pk tfoot td{font-weight:700;font-family:var(--fh);font-size:17px;border-bottom:0;border-top:2px solid var(--gold)}
+.pkbig{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-bottom:12px}
+.pkbig div{background:var(--surface-2);border-radius:10px;padding:8px 12px}
+.pkbig span{display:block;font-size:13px;color:var(--ink-2)}
+.pkbig b{font-family:var(--fh);font-size:26px;color:var(--navy-2)}
+:root[data-theme="dark"] .pkbig b{color:var(--gold)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .pkbig b{color:var(--gold)}}
+@media (prefers-reduced-motion:reduce){.toast{transition:none}}
+@media (max-width:560px){.thumb{width:84px;height:84px}.rrow{grid-template-columns:1fr}.rctl{justify-content:flex-start}.brand img{height:34px}}
+
+/* ===== PDF stage: A4 template (fixed light palette) ===== */
+#stage{--grid:#E3E6EC;position:absolute;left:0;top:0;z-index:-1;font-family:var(--fb);color:#1A2233;background:#fff;line-height:1.5}
+#stage .pg{background:#fff;padding:0 57px;width:794px}
+#stage .pg.land{width:1123px}
+#stage .hd{display:flex;align-items:center;gap:16px;height:70px;padding:36px 0 10px;box-sizing:content-box}
+#stage .hd img{height:70px;width:auto}
+#stage .hd .co{flex:1;min-width:0}
+#stage .hd .cth{font-family:var(--fh);font-weight:600;font-size:20px;line-height:1.2;color:#14254A}
+#stage .hd .cen{font-family:var(--fh);font-weight:500;font-size:14px;letter-spacing:.06em;color:#A8733F}
+#stage .hd .cw{font-size:12px;color:#5A6378}
+#stage .doct{display:flex;justify-content:space-between;align-items:baseline;gap:16px;padding:8px 0 2px}
+#stage .doct .t1{font-family:var(--fh);font-weight:600;font-size:21px;line-height:1.25;color:#14254A}
+#stage .doct .t2{font-size:14px;color:#1A2233;text-align:right}
+#stage .hd .vr{width:1px;align-self:stretch;background:#D5D9E1}
+#stage .hd .tt{flex:1;min-width:0}
+#stage .hd .t1{font-family:var(--fh);font-weight:600;font-size:22px;line-height:1.2;color:#14254A}
+#stage .hd .t2{font-size:15px;font-weight:500}
+#stage .hd .t3{font-size:13px;color:#5A6378}
+#stage .hd .mb{display:grid;grid-template-columns:auto auto;gap:2px 14px;font-size:13px;padding:8px 12px;border:1px solid #C9CED8;border-radius:4px}
+#stage .hd .mb span:nth-child(odd){color:#5A6378}
+#stage .hd .mb span:nth-child(even){font-weight:600}
+#stage .rule1{height:3px;background:#14254A}#stage .rule2{height:1px;background:#A8733F;margin-top:3px}
+#stage .rule1,#stage .rule2,#stage .hd,#stage .doct,#stage .ft{flex-shrink:0}
+#stage .ft{border-top:1px solid #C9CED8;padding:10px 0 40px;display:flex;justify-content:space-between;align-items:flex-end;gap:20px;font-size:12px;color:#5A6378}
+#stage .ft b{color:#1A2233;display:block}
+#stage .ft .pn{background:#14254A;color:#fff;font-weight:600;padding:3px 10px;border-radius:3px;white-space:nowrap;margin-left:12px}
+#stage .bk{padding:0 57px;width:794px;background:#fff}
+#stage .bar{background:#14254A;color:#fff;padding:5px 12px;border-radius:3px;font-family:var(--fh);font-weight:500;font-size:16px;display:flex;justify-content:space-between;margin-top:10px}
+#stage .bar span{font-family:var(--fb);font-size:13px;color:#DCE2EE}
+#stage table{width:100%;border-collapse:collapse;margin-top:6px}
+#stage th{border:1px solid #C9CED8;padding:4px 8px;background:#EEF1F6;color:#14254A;font-weight:600;font-size:13px;text-align:left}
+#stage td{border:1px solid #C9CED8;padding:3px 8px;font-size:14px;vertical-align:top}
+#stage td.c{text-align:center;white-space:nowrap}
+#stage .tok{color:#1E8E4F;font-weight:700}#stage .tis{color:#B98900;font-weight:700}#stage .tno{color:#8A93A3}
+#stage .meta{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:4px 24px;font-size:15px;padding:12px 0 4px;background:none;border:0}
+#stage .meta b{color:#14254A}
+#stage .txt{font-size:16px;white-space:pre-wrap;padding:4px 2px}
+#stage .it{display:flex;gap:14px;padding:8px 0;border-bottom:1px solid #E3E6EC}
+#stage .it .n{font-family:var(--fh);font-weight:600;color:#A8733F;font-size:18px;width:22px}
+#stage .it .t{flex:1;font-size:16px;white-space:pre-wrap}
+#stage .it .st{display:inline-block;margin-top:4px;font-weight:700;font-size:14px;padding:1px 12px;border-radius:4px;color:#fff}
+#stage .it .st.ok{background:#1E8E4F}#stage .it .st.warn{background:#B98900}#stage .it .st.wait{background:#6B7486}
+#stage .it .im{width:260px;display:grid;grid-template-columns:1fr 1fr;gap:5px}
+#stage .it .im.one{grid-template-columns:1fr}
+#stage .it .im img{width:100%;height:120px;object-fit:cover;border-radius:4px;border:1px solid #D5D9E1}
+#stage .it .im.one img{height:170px}
+#stage .rimg{display:flex;gap:4px;margin-top:3px}#stage .rimg img{width:64px;height:48px;object-fit:cover;border-radius:3px}
+#stage .sig{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px;font-size:13px;color:#5A6378;text-align:center;padding-top:28px}
+#stage .sig div{border-top:1px dotted #5A6378;padding-top:4px}
+#stage .sig b{display:block;color:#1A2233;font-size:14px}
+#stage .wk{padding:0 57px;width:1123px;height:794px;background:#fff;display:flex;flex-direction:column}
+#stage .wk .kpis{grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;margin-top:14px}
+#stage .wk .kpi{border:1px solid #C9CED8;border-radius:4px;padding:6px 12px;background:#fff}
+#stage .wk .kpi span{color:#5A6378;font-size:13px}
+#stage .wk .kpi b{color:#14254A;font-size:24px}
+#stage .wk .kpi b small{color:#5A6378}
+#stage .wk .kpi em{color:#5A6378;font-size:12px;display:block}
+#stage .wk .charts{grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:10px 0 12px;flex:1}
+#stage .wk .chart{border:1px solid #C9CED8;border-radius:4px;padding:6px 10px;background:#fff;color:#1A2233}
+#stage .wk .chart h3{font-size:14px;color:#1A2233}
+#stage .wk .chart svg{color:#5A6378;height:128px}
+#stage .wk .legend{color:#5A6378;font-size:11px}
+#stage .wk .ft{margin-top:auto}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="top-in">
+    <div class="brand">
+      <img id="hdrLogo" alt="Smart Terminal">
+      <div><b>รายงานการบริหารอาคาร<span class="mode" id="mode">กำลังเชื่อมต่อ…</span></b><small>งานบริหารอาคาร สำนักงานงบประมาณ · บริษัท สมาร์ท เทอร์มินอล จำกัด</small></div>
+    </div>
+    <nav class="tabs" role="tablist" id="tabs"></nav>
+  </div>
+</header>
+<main id="app"></main>
+<div class="savebar" id="savebar" hidden>
+  <div class="savebar-in">
+    <span class="state" id="saveState">ยังไม่มีการแก้ไข</span>
+    <button class="btn" id="bLine">คัดลอกข้อความส่ง LINE</button>
+    <button class="btn gold" id="bPdf">ดาวน์โหลด PDF</button>
+    <button class="btn pri" id="bSave">บันทึกรายงาน</button>
+  </div>
+</div>
+<div class="modal" id="askModal" role="alertdialog" aria-modal="true" aria-labelledby="askMsg"><div class="box">
+  <div id="askMsg" style="font-size:17px;white-space:pre-line"></div>
+  <div class="row" style="justify-content:flex-end;margin-top:16px"><button class="btn ghost" id="askNo">ยกเลิก</button><button class="btn pri" id="askYes">ยืนยัน</button></div>
+</div></div>
+<div class="modal" id="pinModal" role="dialog" aria-modal="true" aria-labelledby="pinTitle"><div class="box">
+  <h2 id="pinTitle">เข้าสู่โหมดแอดมิน</h2><div class="sub" id="pinSub">ใส่รหัสผ่าน 6 หลัก</div>
+  <div id="pinFields" style="display:flex;flex-direction:column;gap:10px;margin-top:12px"></div>
+  <div class="err" id="pinErr" role="alert"></div>
+  <div class="row" style="justify-content:flex-end;margin-top:10px"><button class="btn ghost" id="pinCancel">ยกเลิก</button><button class="btn pri" id="pinOk">ยืนยัน</button></div>
+</div></div>
+<div class="lb" id="lb" role="dialog" aria-label="ดูภาพ"><button id="lbX" aria-label="ปิด">✕</button><img id="lbImg" alt=""></div>
+<div class="toast" id="toast" role="status"></div>
+<div class="busy" id="busy" role="status"><span id="busyText">กำลังสร้าง PDF…</span><span class="sub">กรุณารอสักครู่ อย่าปิดหน้านี้</span></div>
+<div id="stage" aria-hidden="true"></div>
+<input type="file" id="picker" accept="image/*,video/mp4,video/webm,application/pdf" multiple hidden>
+
+<script>
+(function(){
+"use strict";
+const LOGO_ID="307eece47a465002f71332f6c922e9ad";
+const LOGO_DATA="data:image/png;base64,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";
+const CO_TH="บริษัท สมาร์ท เทอร์มินอล จำกัด",CO_EN="SMART TERMINAL CO., LTD.",CO_WEB="www.smartterminal.co.th";
+const SECTIONS=[
+  {key:"daily",title:"Daily Check: สรุปผลตรวจระบบ",hint:"ผลตรวจระบบโดยรวม และสิ่งที่พบนอกตารางเดินเวร"},
+  {key:"cm",title:"งาน CM",hint:"งานซ่อมแก้ไข"},
+  {key:"pm",title:"งาน PM",hint:"บำรุงรักษาเชิงป้องกัน"},
+  {key:"service",title:"งานบริการ",hint:"บริการผู้ใช้อาคาร"},
+  {key:"cleaning",title:"งานทำความสะอาด",hint:"โซน ชั้น พื้นที่"},
+  {key:"parking",title:"รถจอดค้างคืน (รายคัน)",hint:"ข้อมูลรายทะเบียน"}
+];
+const ST_DEFAULT={done:{label:"เรียบร้อย",cls:"ok",icon:"✅"},doing:{label:"กำลังดำเนินการ",cls:"warn",icon:"🟡"},wait:{label:"รอแก้ไข",cls:"wait",icon:"⏳"}};
+const ST_SET={
+  cleaning:{done:{label:"เรียบร้อย",cls:"ok",icon:"✅"},fix:{label:"ต้องแก้ไข",cls:"warn",icon:"⚠️"}},
+  parking:{found:{label:"พบจอดค้าง",cls:"warn",icon:"🚗"},notified:{label:"แจ้งเจ้าของแล้ว",cls:"wait",icon:"📞"},moved:{label:"ย้ายออกแล้ว",cls:"ok",icon:"✅"}}
+};
+const stOf=k=>ST_SET[k]||ST_DEFAULT;
+const defaultStatus=k=>k==="parking"?"found":"done";
+const SHIFTS={day:"กะเช้า (M)",night:"กะบ่ายดึก (AN)"};
+const EQUIP=["ใบจดมิเตอร์น้ำ/ไฟ","ตารางตรวจเช็คเครื่องจักรประจำวัน","ตารางตรวจเช็ค MDB, หม้อแปลง","ตารางตรวจเช็ค CHILLER","กุญแจ Master, กุญแจลิฟท์"];
+const LOCAL_KEY="dr-reports-v1";
+const C2="จดบันทึกค่าการทำงานของระบบปรับอากาศลงใน Log sheet Chiller ทุก 2 ชั่วโมง";
+const MDB="บันทึกตรวจสอบ ตู้สวิทช์บอร์ด (Main Distribution Board - MDB) ห้องไฟฟ้าหลัก";
+const HANDOVER="ตรวจรับ - ส่งเวร ประชุมทีมงานช่างประจำวัน (พูดคุยปัญหาอุปสรรคการทำงาน)";
+const ROUNDS={
+  day:[
+    {time:"08.00 – 10.00 น.",items:[[HANDOVER,""],
+      ["ตรวจสอบระบบสุขาภิบาล Transfer Pump, Drainage Pump, ระบบบ่อบำบัดน้ำเสีย","B1"],["ตรวจสอบระดับน้ำใน TANK ต่างๆ เพื่อพร้อมใช้","B1"],
+      ["ตรวจสอบระบบความปลอดภัย JOCKY PUMP, ENGINE FIRE PUMP","B1"],["ตรวจสอบระบบความปลอดภัย Fire Alarm","1"],
+      ["ตรวจสอบระบบไฟฟ้าสื่อสาร Transformer, Generator, UPS, BAS","1"],["ตรวจสอบระบบไฟฟ้าสื่อสาร Sound System, Access Control, Lighting Control","4"],
+      [C2,"4"],["ตรวจสอบระบบสุขาภิบาล BOOSTER PUMP","R"],["ตรวจสอบระบบความปลอดภัย JOCKY PUMP, Electric Fire Pump","R"]]},
+    {time:"11.00 น.",items:[[C2,"4"],[MDB,"4"]]}],
+  night:[
+    {time:"17.00 – 19.00 น.",items:[
+      ["ตรวจสอบระบบสุขาภิบาล Transfer Pump, Drainage Pump, ระบบบ่อบำบัดน้ำเสีย","B1"],["ตรวจสอบระดับน้ำใน TANK ต่างๆ เพื่อพร้อมใช้","B1"],
+      ["ตรวจสอบระบบความปลอดภัย JOCKY PUMP, ENGINE FIRE PUMP","B1"],["ตรวจสอบระบบความปลอดภัย Fire Alarm","1"],
+      ["ตรวจสอบระบบไฟฟ้าสื่อสาร Sound System, Access Control, Lighting Control","1"],["ตรวจสอบระบบไฟฟ้าสื่อสาร Transformer, Generator, UPS, Sound System","4"],
+      [C2,"4"],[MDB,"4"],["ตรวจสอบระบบสุขาภิบาล BOOSTER PUMP","R"],["ตรวจสอบระบบความปลอดภัย JOCKY PUMP, Electric Fire Pump","R"],["ตรวจสอบระบบแสงสว่าง ลานจอดรถ",""]]},
+    {time:"18.00 น.",items:[["เปิดระบบแสงสว่าง ด้านหน้าและรอบอาคาร",""]]},
+    {time:"19.00 น.",items:[["ปิด Chiller ตัวใหญ่ เหลือแค่ตัวกลาง 1 ตัว","4"]]},
+    {time:"20.00 น.",items:[["ปิด ทีวี และม่านอากาศ","1"],["ปิดระบบแสงสว่าง หอพระ หน้าอาคาร","1"]]},
+    {time:"22.00 – 23.00 น.",items:[["ปิดระบบแสงสว่าง โถง ชั้น 1",""],["ตรวจสอบถ่ายรูปรถจอดค้างคืน",""],[C2,"4"],[MDB,"4"]]},
+    {time:"06.00 น.",items:[["เปิด Chiller ตัวใหญ่เพิ่ม 1 ตัว","4"],["ปิดระบบแสงสว่าง ด้านหน้าและรอบอาคาร",""],["เปิดระบบแสงสว่าง หอพระ หน้าอาคาร","1"],
+      ["เปิดระบบแสงสว่าง โถง ชั้น 1",""],["เปิด ทีวี และม่านอากาศ","1"],["จดบันทึก (มิเตอร์น้ำประปา, มิเตอร์ไฟฟ้าหลัก)","1"],[MDB,"4"],[C2,"4"]]},
+    {time:"08.00 น.",items:[["เปิดเพลงเคารพธงชาติ","1"],[HANDOVER,""]]}]
+};
+Object.entries(ROUNDS).forEach(([sh,slots])=>slots.forEach((sl,si)=>sl.items=sl.items.map((x,ii)=>({id:(sh==="day"?"m":"a")+si+"-"+ii,text:x[0],floor:x[1]}))));
+const roundItems=sh=>(ROUNDS[sh]||[]).flatMap(s=>s.items);
+const SYSTEMS=[["ปรับอากาศ",/chiller|ปรับอากาศ/i],["สุขาภิบาล",/สุขาภิบาล|tank|booster/i],["ความปลอดภัย/ดับเพลิง",/ความปลอดภัย|fire/i],["ไฟฟ้าและแสงสว่าง",/ไฟฟ้า|mdb|แสงสว่าง|transformer|มิเตอร์/i]];
+const systemOf=t=>(SYSTEMS.find(s=>s[1].test(t))||["อื่นๆ"])[0];
+
+/* ---------- state ---------- */
+let db=null,assets=null,downloads=null,user=null,mode="local",canWrite=true,clientView=true;
+let reports={},draft=null,dirty=false,saving=false,pendingDelete=[],uploads=0;
+let view="overview",pane="handover",uploadTarget=null;
+let calMonth=null,dayView=null,dayShift="day",weekStart=null;
+
+const $=s=>document.querySelector(s);
+const app=$("#app");
+const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const uid=()=>Math.random().toString(36).slice(2,10)+Date.now().toString(36).slice(-4);
+const iso=d=>{const x=new Date(d);x.setMinutes(x.getMinutes()-x.getTimezoneOffset());return x.toISOString().slice(0,10)};
+const today=()=>iso(new Date());
+const addDays=(s,n)=>{const d=new Date(s+"T00:00:00");d.setDate(d.getDate()+n);return iso(d)};
+const mondayOf=s=>{const d=new Date(s+"T00:00:00");const w=(d.getDay()+6)%7;return addDays(s,-w)};
+const nowHM=()=>{const d=new Date();return String(d.getHours()).padStart(2,"0")+":"+String(d.getMinutes()).padStart(2,"0")};
+const rid=(date,shift)=>date+"_"+shift;
+const PROJECT={start:"2026-10-01",end:"2027-09-30",name:"สัญญาบริหารอาคาร สำนักงานงบประมาณ"};
+const lastDay=()=>today()<PROJECT.end?today():PROJECT.end;
+const inProject=d=>d>=PROJECT.start&&d<=PROJECT.end;
+const dayDiff=(a,b)=>Math.round((Date.parse(b+"T00:00:00")-Date.parse(a+"T00:00:00"))/864e5);
+const isPast=d=>d<today();
+const slotStart=(sh,id)=>{const sl=(ROUNDS[sh]||[]).find(x=>x.items.some(i=>i.id===id));const m=sl&&sl.time.match(/(\d{2})\.(\d{2})/);return m?m[1]+":"+m[2]:""};
+const autoTime=id=>isPast(draft.date)?slotStart(draft.shift,id):nowHM();
+function backfillInfo(r){const entered=r.firstSavedAt?iso(r.firstSavedAt):today(),due=r.shift==="night"?addDays(r.date,1):r.date;return entered>due?entered:null}
+const thDate=(s,opt)=>{try{return new Date(s+"T00:00:00").toLocaleDateString("th-TH",opt||{weekday:"long",day:"numeric",month:"long",year:"numeric"})}catch(e){return s}};
+const thShort=s=>thDate(s,{day:"numeric",month:"short"});
+/* asset URL resolution: some views (e.g. iPad Safari) do not resolve the root-relative /_blob/ path */
+const urlCache={};let blobBase=null,sharedBase=null;
+try{blobBase=localStorage.getItem("dr-blobbase")}catch(e){}
+function candidates(id){const c=[];if(urlCache[id])c.push(urlCache[id]);if(blobBase)c.push(blobBase+id);if(sharedBase)c.push(sharedBase+id);c.push("/_blob/"+id);try{if(/^https?:/.test(location.href))c.push(new URL("/_blob/"+id,location.href).href)}catch(e){}return [...new Set(c)]}
+const assetUrl=id=>candidates(id)[0];
+function refreshLogo(){}
+const PH="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7";
+const imgCache={},imgWait={};
+function getImg(id){if(imgCache[id])return Promise.resolve(imgCache[id]);if(!db)return Promise.reject(new Error("no db"));
+  return imgWait[id]=imgWait[id]||db.doc("images/"+id).get().then(d=>{if(!d.exists)throw new Error("image missing");imgCache[id]=d.data().data;return imgCache[id]}).finally(()=>{delete imgWait[id]})}
+function hydrate(){document.querySelectorAll("img[data-img]").forEach(im=>{const id=im.dataset.img;if(imgCache[id]){if(im.src!==imgCache[id])im.src=imgCache[id];return}
+  getImg(id).then(d=>{document.querySelectorAll(`img[data-img="${id}"]`).forEach(x=>x.src=d)}).catch(()=>{const t=im.closest(".thumb");if(t){t.classList.add("broken");im.replaceWith(Object.assign(document.createElement("span"),{textContent:"ภาพยังโหลดไม่ได้"}))}})})}
+const src=m=>m.src||(m.img?(imgCache[m.img]||PH):assetUrl(m.id));
+const imgAttr=m=>m.img?`data-img="${esc(m.img)}"`:(m.id?`data-aid="${esc(m.id)}"`:"");
+/* shrink a photo until its data URL fits in one db document */
+function toDbImage(file){return new Promise((res,rej)=>{const img=new Image(),url=URL.createObjectURL(file);
+  img.onload=()=>{URL.revokeObjectURL(url);let side=1400,q=.8,out=null;
+    for(let i=0;i<12;i++){const k=Math.min(1,side/Math.max(img.width,img.height));const c=document.createElement("canvas");c.width=Math.round(img.width*k);c.height=Math.round(img.height*k);
+      c.getContext("2d").drawImage(img,0,0,c.width,c.height);out=c.toDataURL("image/jpeg",q);c.width=c.height=0;
+      if(out.length<=190000)return res({data:out,w:Math.round(img.width*k),h:Math.round(img.height*k)});if(q>.55)q-=.08;else side=Math.round(side*.8)}
+    rej(new Error("ภาพใหญ่เกินไป"))};
+  img.onerror=()=>{URL.revokeObjectURL(url);rej(new Error("อ่านไฟล์ภาพไม่ได้"))};img.src=url})}
+function learnBase(id,url){if(!url)return;urlCache[id]=url;if(url.endsWith(id)&&url!=="/_blob/"+id){const b=url.slice(0,-id.length);if(b!==blobBase){blobBase=b;try{localStorage.setItem("dr-blobbase",b)}catch(e){}
+  if(db&&canWrite&&b!==sharedBase){sharedBase=b;db.doc("config/blob").set({base:b,at:Date.now()}).catch(()=>{})}}}}
+document.addEventListener("error",e=>{const im=e.target;if(!im||im.tagName!=="IMG"||!im.dataset.aid)return;const c=candidates(im.dataset.aid),n=+(im.dataset.try||0)+1;
+  if(n<c.length){im.dataset.try=n;im.src=c[n]}else if(im.id==="hdrLogo")im.style.display="none";else if(im.closest(".thumb")){const t=im.closest(".thumb");t.classList.add("broken");im.replaceWith(Object.assign(document.createElement("span"),{textContent:"ภาพยังโหลดไม่ได้ ลองรีเฟรช"}))}},true);
+const isAdmin=()=>canWrite&&!clientView;
+function toast(t){const el=$("#toast");el.textContent=t;el.classList.add("on");clearTimeout(toast._t);toast._t=setTimeout(()=>el.classList.remove("on"),2600)}
+function clone(o){return JSON.parse(JSON.stringify(o))}
+function blankHandover(){return{head:"",staff:"",equip:{},repairs:"",events:"",contractors:"",send1:"",send2:"",recv1:"",recv2:"",engineer:""}}
+function blank(date,shift){return normalize({date,shift,reporter:"",note:"",updatedAt:0})}
+function normalize(r){
+  r.sections=r.sections||{};SECTIONS.forEach(s=>{if(!Array.isArray(r.sections[s.key]))r.sections[s.key]=[]});
+  r.rounds=r.rounds||{};r.handover=Object.assign(blankHandover(),r.handover||{});r.handover.equip=r.handover.equip||{};
+  r.parkingCount=Object.assign({time:"",rows:[],note:"",media:[]},r.parkingCount||{});return r;
+}
+const getR=id=>reports[id]?normalize(clone(reports[id])):null;
+function loadDraft(date,shift){const r=getR(rid(date,shift));draft=r||blank(date,shift);dirty=false;pendingDelete=[]}
+function setDirty(v){dirty=v;const st=$("#saveState");if(!st)return;st.textContent=v?"มีการแก้ไขที่ยังไม่บันทึก":(draft&&draft.updatedAt?"บันทึกล่าสุด "+new Date(draft.updatedAt).toLocaleString("th-TH"):"ยังไม่มีการแก้ไข");st.classList.toggle("dirty",v)}
+function holder(h,create){
+  const p=h.split(":");
+  if(p[0]==="s")return draft.sections[p[1]].find(x=>x.id===p[2]);
+  if(p[0]==="p"){const P=draft.parkingCount;P.media=P.media||[];return P}
+  if(!draft.rounds[p[1]]){if(!create)return null;draft.rounds[p[1]]={status:"",time:"",note:"",media:[]}}
+  const r=draft.rounds[p[1]];r.media=r.media||[];return r;
+}
+/* ---------- import a LINE daily summary ---------- */
+const IMP_HEAD=[["daily",/daily\s*check|ตรวจเช็[คก]/i],["cm",/งาน\s*cm\b|^cm\b/i],["pm",/งาน\s*pm\b|^pm\b/i],["cleaning",/ทำความสะอาด|แม่บ้าน/],["service",/บริการ/]];
+function lineDate(text){const dm=text.match(/(\d{1,2})\s*\/\s*(\d{1,2})\s*\/\s*(\d{4})/);if(!dm)return null;let y=+dm[3];if(y>2400)y-=543;return `${y}-${String(dm[2]).padStart(2,"0")}-${String(dm[1]).padStart(2,"0")}`}
+function lineShift(text){if(/กะดึก|กะบ่าย|\(?\s*17[:.]00\s*-\s*0?8/.test(text))return "night";if(/กะเช้า|\(?\s*0?8[:.]00\s*-\s*17/.test(text))return "day";return null}
+function itemStatus(t,key){
+  if(key==="cleaning")return /ต้องแก้|ไม่สะอาด|❌|⚠️/.test(t)?"fix":"done";
+  if(/❌|⚠️|ผิดปกติ|ชำรุด|รออะไหล่|รอแก้|รอดำเนิน|รอตรวจ/.test(t))return "wait";
+  if(/กำลัง|อยู่ระหว่าง/.test(t))return "doing";
+  return "done"}
+const cleanItem=t=>t.replace(/[✅❌⚠️🟡⏳]\uFE0F?/g," ").replace(/\s*(ปกติ)\s*$/,"").replace(/\s+/g," ").trim();
+function parseDaily(text){
+  const out={date:lineDate(text),shift:lineShift(text),sections:{daily:[],cm:[],pm:[],service:[],cleaning:[]},count:0};let cur=null,last=null;
+  text.split(/\n/).forEach(raw=>{const l=raw.trim();if(!l)return;
+    const bullet=/^[-–•*·]\s*|^\d{1,2}[.)]\s+/.test(l);
+    if(!bullet){const plain=l.replace(/^[🚩▪️🔧📌#*\s]+/u,"");const h=IMP_HEAD.find(([,re])=>re.test(plain));
+      if(h&&(plain.length<40||/^🚩/u.test(l))){cur=h[0];last=null;return}}
+    if(!cur)return;
+    if(bullet){const body=l.replace(/^[-–•*·]\s*|^\d{1,2}[.)]\s+/,"");const t=cleanItem(body);if(!t)return;
+      last={id:uid(),text:t,status:itemStatus(body,cur),media:[]};out.sections[cur].push(last);out.count++}
+    else if(last){last.text+="\n"+cleanItem(l);last.status=itemStatus(last.text,cur)}
+  });return out}
+const IMP_NAME={daily:"Daily Check",cm:"งาน CM",pm:"งาน PM",service:"งานบริการ",cleaning:"ทำความสะอาด"};
+async function importDaily(text){
+  const P=parseDaily(text||"");if(!P.count){toast("ไม่พบหัวข้อ 🚩Daily Check / งาน CM / งาน PM / งานบริการ ในข้อความ");return}
+  const date=P.date||draft.date,shift=P.shift||draft.shift;
+  if(date>today()){toast("วันที่ในข้อความเป็นวันในอนาคต ตรวจสอบข้อความอีกครั้ง");return}
+  if(!inProject(date)){toast(`วันที่ในข้อความ (${thDate(date,{day:"numeric",month:"short",year:"numeric"})}) อยู่นอกระยะสัญญา 1 ต.ค. 2569 – 30 ก.ย. 2570`);return}
+  const sum=Object.entries(P.sections).filter(([,v])=>v.length).map(([k,v])=>`${IMP_NAME[k]} ${v.length}`).join(", ");
+  if(!await ask(`นำเข้ารายงาน ${thDate(date)} ${SHIFTS[shift]}\n${sum} รายการ${!P.date?"\n(ไม่พบวันที่ในข้อความ ใช้วันที่ที่เปิดอยู่)":""}`,"นำเข้าและบันทึก"))return;
+  if(date!==draft.date||shift!==draft.shift){if(!await confirmLeave())return;loadDraft(date,shift)}
+  let added=0,dup=0;const norm=t=>t.replace(/\s+/g,"");
+  Object.entries(P.sections).forEach(([k,items])=>{const have=new Set(draft.sections[k].map(x=>norm(x.text||"")));items.forEach(it=>{if(have.has(norm(it.text))){dup++;return}draft.sections[k].push(it);added++})});
+  if(!added){toast(dup?"รายการทั้งหมดมีอยู่ในรายงานแล้ว ไม่ได้เพิ่มซ้ำ":"ไม่มีรายการให้นำเข้า");renderEdit();return}
+  pane=P.sections.cm.length?"cm":P.sections.daily.length?"rounds":"service";setDirty(true);renderEdit();
+  await saveReport();if(!dirty)toast(`นำเข้าและบันทึกแล้ว ${added} รายการ${dup?` (ข้ามรายการซ้ำ ${dup})`:""}`);
+}
+async function lineImport(text){
+  if(!(text||"").trim()){toast("วางข้อความจาก LINE ก่อน");return}
+  if(/รถจอดค้างคืน/.test(text)&&/ชั้น\s*[0-9A-Za-z]+.*?\d+\s*คัน/.test(text))return pkImport(text);
+  return importDaily(text)}
+/* ---------- overnight parking (floor counts) ---------- */
+const FLOORS=["3A","3","2A","2B","MA","M","B1","B2","B3"];
+const num=v=>{const n=parseInt(v,10);return isNaN(n)?0:n};
+function pkSum(r){const rows=((r.parkingCount||{}).rows)||[];let car=0,moto=0;rows.forEach(x=>{car+=num(x.car);moto+=num(x.moto)});return{car,moto,total:car+moto}}
+const hasPk=r=>(((r.parkingCount||{}).rows)||[]).some(x=>x.car!==""&&x.car!=null||x.moto!==""&&x.moto!=null);
+const beDate=d=>`${Number(d.slice(8))}/${Number(d.slice(5,7))}/${Number(d.slice(0,4))+543}`;
+function pkText(r){const P=r.parkingCount,S=pkSum(r);
+  let t=`ขออนุญาตเรียนแจ้งหน่วยงาน สำนักงบประมาณ\nวันที่ ${beDate(r.date)}\n${P.time?`ตั้งแต่เวลา ${P.time.replace(":",".")} น.\n`:""}ตรวจสอบอาคารชั้นจอดรถมีรถจอดค้างคืนในอาคาร\nรถยนต์ ${S.car} คัน\nมอเตอร์ไซค์ ${S.moto} คัน\nรวม ${S.total} คัน\n`;
+  const L=[];P.rows.forEach(x=>{if(num(x.car))L.push(`ชั้น ${x.floor} รถยนต์ ${num(x.car)} คัน`);if(num(x.moto))L.push(`ชั้น ${x.floor} รถมอเตอร์ไซค์ ${num(x.moto)} คัน`)});
+  if(L.length)t+="\n"+L.join("\n");if(P.note)t+="\n\nหมายเหตุ: "+P.note;return t}
+/* read the LINE message format: "ชั้น M รถยนต์ 19 คัน" / "ชั้น B1รถมอเตอร์ไซต์ 5 คัน" */
+function parsePk(text){
+  const out={rows:[],stated:{},date:null,time:""};const idx={};
+  const dm=text.match(/(\d{1,2})\s*\/\s*(\d{1,2})\s*\/\s*(\d{4})/);
+  if(dm){let y=+dm[3];if(y>2400)y-=543;out.date=`${y}-${String(dm[2]).padStart(2,"0")}-${String(dm[1]).padStart(2,"0")}`}
+  const tm=text.match(/เวลา\s*(\d{1,2})\s*[.:]\s*(\d{2})/);if(tm)out.time=`${String(tm[1]).padStart(2,"0")}:${tm[2]}`;
+  text.split(/\n/).forEach(line=>{const l=line.trim();if(!l)return;
+    const m=l.match(/^ชั้น\s*([0-9A-Za-z]+)\s*(.*?)(\d+)\s*คัน/);
+    if(m){const f=m[1].toUpperCase(),moto=/มอเตอร์ไซ|จักรยานยนต์/.test(m[2]);if(!(f in idx)){idx[f]=out.rows.length;out.rows.push({floor:f,car:"",moto:""})}
+      const row=out.rows[idx[f]];const k=moto?"moto":"car";row[k]=String(num(row[k])+num(m[3]));return}
+    let s2;if((s2=l.match(/^รถยนต์\s*(\d+)/)))out.stated.car=+s2[1];else if((s2=l.match(/^(?:รถ)?(?:มอเตอร์ไซ|จักรยานยนต์)\S*\s*(\d+)/)))out.stated.moto=+s2[1];else if((s2=l.match(/^รวม\s*(\d+)/)))out.stated.total=+s2[1]});
+  return out}
+function pkMarkRound(){const it=roundItems("night").find(i=>/รถจอดค้างคืน/.test(i.text));if(!it||draft.shift!=="night")return;const x=holder("r:"+it.id,true);if(!x.status){x.status="ok";x.time=draft.parkingCount.time||autoTime(it.id)}}
+let pkWarn="";
+async function pkImport(text){
+  const P=parsePk(text||"");if(!P.rows.length){toast("ไม่พบข้อมูล “ชั้น … รถยนต์/มอเตอร์ไซค์ … คัน” ในข้อความ");return}
+  let date=P.date||draft.date,shift="night";
+  if(P.time){const hh=+P.time.slice(0,2);if(hh>=8&&hh<17)shift="day";else if(hh<8)date=addDays(date,-1)}
+  if(date>today()){toast("วันที่ในข้อความเป็นวันในอนาคต ตรวจสอบข้อความอีกครั้ง");return}
+  if(!inProject(date)){toast(`วันที่ในข้อความ (${thDate(date,{day:"numeric",month:"short",year:"numeric"})}) อยู่นอกระยะสัญญา 1 ต.ค. 2569 – 30 ก.ย. 2570`);return}
+  if(date!==draft.date||shift!==draft.shift){
+    if(!await ask(`ข้อความนี้เป็นรายงานของ ${thDate(date)} ${SHIFTS[shift]}\nระบบจะเปิดรายงานวันและกะนั้น แล้วนำเข้าข้อมูล`,"นำเข้าที่วันและกะนี้"))return;
+    if(!await confirmLeave())return;loadDraft(date,shift)}
+  const D=draft.parkingCount;D.rows=P.rows;if(P.time)D.time=P.time;
+  pkMarkRound();
+  const S=pkSum(draft),w=[];
+  if(P.stated.car!=null&&P.stated.car!==S.car)w.push(`รถยนต์ในข้อความรวม ${P.stated.car} คัน แต่รายชั้นรวมได้ ${S.car} คัน`);
+  if(P.stated.moto!=null&&P.stated.moto!==S.moto)w.push(`มอเตอร์ไซค์ในข้อความรวม ${P.stated.moto} คัน แต่รายชั้นรวมได้ ${S.moto} คัน`);
+  if(P.stated.total!=null&&P.stated.total!==S.total)w.push(`ยอดรวมในข้อความ ${P.stated.total} คัน แต่รายชั้นรวมได้ ${S.total} คัน`);
+  pkWarn=w.join(" · ");pane="parking";setDirty(true);renderEdit();
+  if(w.length){toast("นำเข้าแล้ว แต่ยอดรวมไม่ตรงกัน ตรวจตัวเลขแล้วกด “บันทึกรายงาน”");return}
+  await saveReport();if(!dirty)toast(`นำเข้าและบันทึกแล้ว: ${thDate(draft.date,{day:"numeric",month:"short"})} ${SHIFTS[draft.shift]} รวม ${S.total} คัน`);
+}
+function pkUpdateTotals(){const S=pkSum(draft);const f=$("#pkFoot");if(f)f.innerHTML=`<td>รวม</td><td class="n">${S.car}</td><td class="n">${S.moto}</td><td class="n">${S.total}</td><td></td>`;
+  document.querySelectorAll("[data-pkrow]").forEach(tr=>{const x=draft.parkingCount.rows[+tr.dataset.pkrow];tr.querySelector(".rt").textContent=num(x.car)+num(x.moto)});
+  const big=$("#pkBig");if(big)big.innerHTML=pkBigHTML(S)}
+const pkBigHTML=S=>`<div><span>รถยนต์</span><b>${S.car}</b></div><div><span>มอเตอร์ไซค์</span><b>${S.moto}</b></div><div><span>รวม</span><b>${S.total}</b></div>`;
+function parkingHTML(){
+  const P=draft.parkingCount,S=pkSum(draft);
+  if(!P.rows.length)P.rows=FLOORS.map(f=>({floor:f,car:"",moto:""}));
+  return `<div class="card"><h3>นำเข้าจากข้อความ LINE</h3>
+      <div class="sub" style="margin-bottom:8px">วางข้อความรายงานรถจอดค้างคืนที่ส่งใน LINE ทั้งข้อความ ระบบจะอ่านวันที่ เวลา และจำนวนรถรายชั้นให้อัตโนมัติ</div>
+      <textarea class="inp" id="pkPaste" style="min-height:120px;font-size:15px" placeholder="ขออนุญาตเรียนแจ้งหน่วยงาน สำนักงบประมาณ&#10;วันที่ 1/10/2569&#10;ตั้งแต่เวลา 22.30 น.&#10;…&#10;ชั้น M รถยนต์ 19 คัน"></textarea>
+      <div class="row" style="margin-top:8px"><button class="btn gold" data-act="pkImport">นำเข้าและบันทึก</button></div></div>
+    <div class="card"><h3>รถจอดค้างคืนในอาคาร</h3>
+      ${pkWarn?`<div class="banner">⚠️ ${esc(pkWarn)}</div>`:""}
+      <div class="pkbig" id="pkBig">${pkBigHTML(S)}</div>
+      <label class="f" style="max-width:220px;margin-bottom:10px">เวลาเริ่มตรวจ<input class="inp" type="time" data-pk="time" value="${esc(P.time)}"></label>
+      <div style="overflow-x:auto"><table class="pk"><thead><tr><th>ชั้น</th><th class="n">รถยนต์ (คัน)</th><th class="n">มอเตอร์ไซค์ (คัน)</th><th class="n">รวม</th><th></th></tr></thead><tbody>
+      ${P.rows.map((x,i)=>`<tr data-pkrow="${i}"><td><input class="inp" data-pkf="floor" data-i="${i}" value="${esc(x.floor)}" aria-label="ชั้น"></td>
+        <td class="n"><input class="inp qty" type="number" inputmode="numeric" min="0" data-pkf="car" data-i="${i}" value="${esc(x.car)}" aria-label="รถยนต์ ชั้น ${esc(x.floor)}"></td>
+        <td class="n"><input class="inp qty" type="number" inputmode="numeric" min="0" data-pkf="moto" data-i="${i}" value="${esc(x.moto)}" aria-label="มอเตอร์ไซค์ ชั้น ${esc(x.floor)}"></td>
+        <td class="n rt">${num(x.car)+num(x.moto)}</td><td><button class="btn sm ghost del" data-act="pkDel" data-i="${i}" aria-label="ลบชั้น">✕</button></td></tr>`).join("")}
+      </tbody><tfoot><tr id="pkFoot"><td>รวม</td><td class="n">${S.car}</td><td class="n">${S.moto}</td><td class="n">${S.total}</td><td></td></tr></tfoot></table></div>
+      <div class="row" style="margin-top:8px"><button class="btn sm" data-act="pkAdd">+ เพิ่มชั้น</button><span class="spacer"></span><button class="btn" data-act="pkLine">คัดลอกข้อความรายงานรถ (LINE)</button></div>
+      <label class="f" style="margin-top:12px">หมายเหตุ<textarea class="inp" data-pk="note" style="min-height:60px">${esc(P.note)}</textarea></label>
+      <div data-h="p:main" style="margin-top:10px"><div class="row"><button class="btn" data-act="att" ${attOff()}>📷 แนบภาพ</button></div>
+        ${(P.media||[]).length?`<div class="media" style="margin-top:8px">${P.media.map((m,mi)=>thumb(m,mi,true)).join("")}</div>`:""}</div>
+    </div>
+    ${draft.sections.parking.length?sectionHTML(SECTIONS.find(s=>s.key==="parking")):""}`;
+}
+function pkViewHTML(r){
+  if(!hasPk(r))return "";const P=r.parkingCount,S=pkSum(r);
+  return `<div class="sec-h"><h2>รายงานรถจอดค้างคืน${P.time?` <small>ตรวจเวลา ${esc(P.time.replace(":","."))} น.</small>`:""}</h2><span class="count">${S.total}</span></div>
+   <div class="card" style="margin-top:10px"><div class="pkbig">${pkBigHTML(S)}</div><div style="overflow-x:auto"><table class="pk"><thead><tr><th>ชั้น</th><th class="n">รถยนต์</th><th class="n">มอเตอร์ไซค์</th><th class="n">รวม</th></tr></thead><tbody>
+   ${P.rows.filter(x=>num(x.car)||num(x.moto)).map(x=>`<tr><td>${esc(x.floor)}</td><td class="n">${num(x.car)}</td><td class="n">${num(x.moto)}</td><td class="n">${num(x.car)+num(x.moto)}</td></tr>`).join("")}
+   </tbody><tfoot><tr><td>รวม</td><td class="n">${S.car}</td><td class="n">${S.moto}</td><td class="n">${S.total}</td></tr></tfoot></table></div>
+   ${P.note?`<div class="vtext" style="margin-top:8px">${esc(P.note)}</div>`:""}
+   ${(P.media||[]).length?`<div class="media" style="margin-top:8px">${P.media.map((m,mi)=>thumb(m,mi,false)).join("")}</div>`:""}</div>`;
+}
+function allMedia(r){const o=[];SECTIONS.forEach(s=>r.sections[s.key].forEach(it=>(it.media||[]).forEach(m=>o.push(m))));Object.values(r.rounds).forEach(x=>(x.media||[]).forEach(m=>o.push(m)));((r.parkingCount||{}).media||[]).forEach(m=>o.push(m));return o}
+function roundStats(r){const items=roundItems(r.shift);let ok=0,issue=0;items.forEach(i=>{const x=r.rounds[i.id];if(x&&x.status==="ok")ok++;else if(x&&x.status==="issue")issue++});return{total:items.length,ok,issue,done:ok+issue}}
+
+/* ---------- storage ---------- */
+function localRead(){try{const t=localStorage.getItem(LOCAL_KEY);return t?JSON.parse(t):{}}catch(e){return{}}}
+function localWrite(){try{localStorage.setItem(LOCAL_KEY,JSON.stringify(reports));return true}catch(e){return false}}
+async function saveReport(){
+  if(!draft||saving)return;
+  if(uploads>0){toast("รอให้อัปโหลดไฟล์เสร็จก่อน");return}
+  if(!canWrite){toast("บัญชีนี้ดูรายงานได้อย่างเดียว");return}
+  saving=true;$("#bSave").disabled=true;$("#bSave").textContent="กำลังบันทึก…";
+  draft.updatedAt=Date.now();if(!draft.firstSavedAt)draft.firstSavedAt=draft.updatedAt;
+  if(user&&!draft.createdBy){try{draft.createdBy=await user.id()}catch(e){}}
+  const id=rid(draft.date,draft.shift);
+  try{
+    if(mode==="cloud"){await db.collection("reports").doc(id).set(clone(draft));reports[id]=clone(draft);for(const a of pendingDelete){try{if(a.startsWith("img:"))await db.doc("images/"+a.slice(4)).delete();else if(assets)await assets.delete(a)}catch(e){}}}
+    else{const prev=reports[id];reports[id]=clone(draft);if(!localWrite()){if(prev)reports[id]=prev;else delete reports[id];toast("พื้นที่เก็บในเครื่องเต็ม ลดจำนวนภาพหรือเปิดผ่านลิงก์ที่เผยแพร่");throw 0}}
+    pendingDelete=[];setDirty(false);toast("บันทึกรายงานแล้ว");render();
+  }catch(e){
+    if(e&&e.code==="invalid_argument"){canWrite=false;toast("บัญชีนี้ไม่มีสิทธิ์บันทึก");render()}
+    else if(e&&e.code==="quota_exceeded")toast("พื้นที่ฐานข้อมูลเต็ม");
+    else if(e!==0)toast("บันทึกไม่สำเร็จ ลองอีกครั้ง");
+  }
+  saving=false;const b=$("#bSave");if(b){b.disabled=false;b.textContent="บันทึกรายงาน"}
+}
+async function deleteReport(id){
+  const r=getR(id);if(!r)return;
+  if(!await ask("ลบรายงาน "+thDate(r.date)+" "+SHIFTS[r.shift]+" ทั้งหมด?\nภาพและไฟล์ในรายงานนี้จะถูกลบด้วย","ลบรายงาน"))return;
+  try{
+    if(mode==="cloud"){await db.collection("reports").doc(id).delete();for(const m of allMedia(r)){try{if(m.img)await db.doc("images/"+m.img).delete();if(m.id&&assets)await assets.delete(m.id)}catch(e){}}}
+    delete reports[id];if(mode!=="cloud")localWrite();toast("ลบรายงานแล้ว");render();
+  }catch(e){toast("ลบไม่สำเร็จ")}
+}
+
+/* ---------- media ---------- */
+function compress(file){return new Promise(res=>{
+  if(!/^image\/(jpeg|png|webp|heic|heif)/.test(file.type)){res(file);return}
+  const img=new Image(),url=URL.createObjectURL(file);
+  img.onload=()=>{const k=Math.min(1,1600/Math.max(img.width,img.height));const c=document.createElement("canvas");c.width=Math.round(img.width*k);c.height=Math.round(img.height*k);
+    c.getContext("2d").drawImage(img,0,0,c.width,c.height);URL.revokeObjectURL(url);
+    c.toBlob(b=>res(b&&b.size<file.size?new File([b],file.name.replace(/\.\w+$/,"")+".jpg",{type:"image/jpeg"}):file),"image/jpeg",.82)};
+  img.onerror=()=>{URL.revokeObjectURL(url);res(file)};img.src=url})}
+const kindOf=t=>t.startsWith("image/")?"image":t.startsWith("video/")?"video":"pdf";
+function toDataURL(b){return new Promise(r=>{const f=new FileReader();f.onload=()=>r(f.result);f.readAsDataURL(b)})}
+async function addFiles(files,h){
+  const it=holder(h,true);if(!it)return;
+  if(h[0]==="r"&&!it.status){it.status="ok";it.time=it.time||autoTime(h.slice(2))}
+  for(const raw of files){
+    if(!/^(image\/|video\/(mp4|webm)|application\/pdf)/.test(raw.type)){toast("รองรับเฉพาะภาพ วิดีโอ MP4 และ PDF");continue}
+    const f=await compress(raw);if(f.size>20*1024*1024){toast(raw.name+" ใหญ่เกิน 20 MB");continue}
+    const tmp={tmp:uid(),kind:kindOf(f.type),name:raw.name,takenAt:raw.lastModified||null};it.media=it.media||[];it.media.push(tmp);uploads++;setDirty(true);render();
+    try{
+      if(mode==="cloud"&&tmp.kind==="image"){
+        const di=await toDbImage(raw),iid="i"+uid();await db.doc("images/"+iid).set({data:di.data,w:di.w,h:di.h,name:raw.name,at:Date.now()});
+        imgCache[iid]=di.data;tmp.img=iid;
+        if(assets)assets.upload(f,{type:f.type}).then(r=>{tmp.id=r.id;learnBase(r.id,r.url)}).catch(()=>{}); /* full-size copy kept as archive */
+      }else if(mode==="cloud"){if(!assets)throw{code:"no_assets"};const r=await assets.upload(f,{type:f.type});tmp.id=r.id;learnBase(r.id,r.url)}
+      else tmp.src=await toDataURL(f);
+      delete tmp.tmp}
+    catch(e){it.media=it.media.filter(m=>m!==tmp);toast(e&&e.code==="quota_exceeded"?"พื้นที่เก็บข้อมูลเต็ม":e&&e.code==="no_assets"?"แนบวิดีโอ/PDF ได้เฉพาะสิทธิ์ Editor":"อัปโหลด "+raw.name+" ไม่สำเร็จ ("+(e&&(e.code||e.message)||"")+")")}
+    uploads--;render();
+  }
+}
+
+/* ---------- analytics ---------- */
+function weekData(start){
+  const days=[...Array(7)].map((_,i)=>addDays(start,i));
+  const W={days,roundPct:{day:[],night:[]},issuesBySys:{},cmOpen:[],cmClosed:[],pm:{done:[],doing:[],wait:[]},service:[],cleaning:[],parking:[],parkCar:[],parkMoto:[],parkNights:0,plates:{},issues:[],tot:{rOk:0,rTot:0,cmO:0,cmC:0,pmDone:0,pmTot:0,svc:0,cln:0,park:0,reports:0}};
+  days.forEach(d=>{
+    let cmO=0,cmC=0,pmd=0,pmg=0,pmw=0,svc=0,cln=0,park=0,pc=0,pmo=0,hasNight=false;
+    ["day","night"].forEach(sh=>{
+      const r=getR(rid(d,sh));
+      if(!r){W.roundPct[sh].push(null);return}
+      W.tot.reports++;
+      const s=roundStats(r);W.roundPct[sh].push(s.total?Math.round(s.done*100/s.total):null);W.tot.rOk+=s.done;W.tot.rTot+=s.total;
+      roundItems(sh).forEach(i=>{const x=r.rounds[i.id];if(x&&x.status==="issue"){const k=systemOf(i.text);W.issuesBySys[k]=(W.issuesBySys[k]||0)+1;W.issues.push(`${thShort(d)} ${sh==="day"?"M":"AN"}: ${i.text}${x.note?" ("+x.note+")":""}`)}});
+      r.sections.cm.forEach(it=>{cmO++;if(it.status==="done")cmC++;else W.issues.push(`${thShort(d)} งาน CM ยังไม่ปิด: ${(it.text||"").split("\n")[0]}`)});
+      r.sections.pm.forEach(it=>{if(it.status==="done")pmd++;else if(it.status==="doing")pmg++;else pmw++});
+      svc+=r.sections.service.length;cln+=r.sections.cleaning.length;
+      if(hasPk(r)){const S=pkSum(r);pc+=S.car;pmo+=S.moto;park+=S.total;hasNight=true}
+      r.sections.parking.forEach(it=>{park++;if(!hasPk(r))pc++;const p=(it.plate||"").replace(/\s+/g,"").toUpperCase();if(p){W.plates[p]=W.plates[p]||new Set();W.plates[p].add(d)}});
+    });
+    W.cmOpen.push(cmO);W.cmClosed.push(cmC);W.pm.done.push(pmd);W.pm.doing.push(pmg);W.pm.wait.push(pmw);W.service.push(svc);W.cleaning.push(cln);W.parking.push(park);W.parkCar.push(pc);W.parkMoto.push(pmo);if(hasNight||park)W.parkNights++;
+    W.tot.cmO+=cmO;W.tot.cmC+=cmC;W.tot.pmDone+=pmd;W.tot.pmTot+=pmd+pmg+pmw;W.tot.svc+=svc;W.tot.cln+=cln;W.tot.park+=park;
+  });
+  W.repeat=Object.entries(W.plates).filter(([,s])=>s.size>=2).map(([p,s])=>`${p} (${s.size} คืน)`);
+  return W;
+}
+function kpiList(W,P){
+  const pct=(a,b)=>b?Math.round(a*100/b):null;
+  const d=(a,b,u)=>a==null||b==null?"ไม่มีข้อมูลสัปดาห์ก่อน":`เทียบสัปดาห์ก่อน ${a-b>=0?"+":""}${a-b}${u}`;
+  const r=pct(W.tot.rOk,W.tot.rTot),rp=pct(P.tot.rOk,P.tot.rTot),pm=pct(W.tot.pmDone,W.tot.pmTot),pmp=pct(P.tot.pmDone,P.tot.pmTot);
+  return[
+    {l:"อัตราเดินเวรครบ",v:r==null?"–":r,u:"%",c:d(r,rp," จุด")},
+    {l:"งาน CM เปิดใหม่ / ปิดได้",v:`${W.tot.cmO} / ${W.tot.cmC}`,u:"รายการ",c:d(W.tot.cmO,P.tot.cmO," รายการเปิดใหม่")},
+    {l:"งาน PM เสร็จตามแผน",v:pm==null?"–":pm,u:"%",c:d(pm,pmp," จุด")},
+    {l:"งานบริการ + ทำความสะอาด",v:W.tot.svc+W.tot.cln,u:"รายการ",c:d(W.tot.svc+W.tot.cln,P.tot.svc+P.tot.cln," รายการ")},
+    {l:"รถจอดค้างคืน (เฉลี่ย)",v:W.parkNights?Math.round(W.tot.park/W.parkNights):"–",u:"คัน/คืน",c:W.parkNights&&P.parkNights?d(Math.round(W.tot.park/W.parkNights),Math.round(P.tot.park/P.parkNights)," คัน"):"ไม่มีข้อมูลสัปดาห์ก่อน"}
+  ];
+}
+const kpiHTML=k=>`<div class="kpis">${k.map(x=>`<div class="kpi"><span>${x.l}</span><b>${esc(x.v)}<small>${x.u}</small></b><em>${esc(x.c)}</em></div>`).join("")}</div>`;
+
+/* ---------- SVG charts ---------- */
+const COL=["var(--c1)","var(--c2)","var(--c3)","var(--c4)"];
+const PCOL=["#14254A","#C9A227","#1E8E4F","#7A8394"];
+function axes(labels,maxV,W,H,L,B,unit){
+  let g="";const steps=4;
+  for(let i=0;i<=steps;i++){const v=maxV*i/steps,y=H-B-(H-B-10)*i/steps;g+=`<line x1="${L}" x2="${W-6}" y1="${y}" y2="${y}" stroke="var(--grid,#E3E6EC)" stroke-width="1"/><text x="${L-6}" y="${y+4}" font-size="11" text-anchor="end" fill="currentColor">${Math.round(v)}${unit||""}</text>`}
+  const bw=(W-L-6)/labels.length;labels.forEach((t,i)=>{g+=`<text x="${L+bw*i+bw/2}" y="${H-B+16}" font-size="11" text-anchor="middle" fill="currentColor">${esc(t)}</text>`});
+  return{g,bw};
+}
+function niceMax(v){if(v<=4)return 4;const p=Math.pow(10,Math.floor(Math.log10(v)));const n=[1,2,2.5,5,10].find(x=>x*p>=v);return n*p}
+function lineChart(labels,series,pal,unit,fixedMax){
+  const W=360,H=200,L=40,B=26;const maxV=fixedMax||niceMax(Math.max(1,...series.flatMap(s=>s.values.filter(v=>v!=null))));
+  const {g,bw}=axes(labels,maxV,W,H,L,B,unit);let s="";
+  series.forEach((se,si)=>{let d="";se.values.forEach((v,i)=>{if(v==null)return;const x=L+bw*i+bw/2,y=H-B-(H-B-10)*v/maxV;d+=(d&&se.values[i-1]!=null?"L":"M")+x.toFixed(1)+" "+y.toFixed(1);s+=`<circle cx="${x}" cy="${y}" r="3.5" fill="${pal[si]}"/>`});s=`<path d="${d}" fill="none" stroke="${pal[si]}" stroke-width="2.5"/>`+s});
+  return `<svg viewBox="0 0 ${W} ${H}" role="img">${g}${s}</svg>`;
+}
+function barChart(labels,series,pal,stacked){
+  const W=360,H=200,L=34,B=26;const tot=labels.map((_,i)=>stacked?series.reduce((a,s)=>a+s.values[i],0):Math.max(...series.map(s=>s.values[i])));
+  const maxV=niceMax(Math.max(1,...tot));const {g,bw}=axes(labels,maxV,W,H,L,B,"");let s="";
+  labels.forEach((_,i)=>{let acc=0;const n=stacked?1:series.length,w=Math.min(26,(bw-8)/n);
+    series.forEach((se,si)=>{const v=se.values[i];if(!v)return;const h=(H-B-10)*v/maxV;const x=stacked?L+bw*i+bw/2-w/2:L+bw*i+bw/2-(w*n)/2+w*si;const y=H-B-h-(stacked?acc:0);
+      s+=`<rect x="${x.toFixed(1)}" y="${y.toFixed(1)}" width="${w.toFixed(1)}" height="${h.toFixed(1)}" fill="${pal[si]}" rx="2"/>`;if(stacked)acc+=h})});
+  return `<svg viewBox="0 0 ${W} ${H}" role="img">${g}${s}</svg>`;
+}
+function hbarChart(items,pal){
+  const W=360,H=200;if(!items.length)return `<svg viewBox="0 0 ${W} ${H}" role="img"><text x="${W/2}" y="${H/2}" text-anchor="middle" font-size="13" fill="currentColor">ไม่พบปัญหาในสัปดาห์นี้</text></svg>`;
+  const max=Math.max(...items.map(i=>i[1])),rowH=Math.min(34,(H-10)/items.length);let s="";
+  items.forEach(([k,v],i)=>{const y=6+i*rowH,w=(W-170)*v/max;s+=`<text x="128" y="${y+rowH/2+4}" font-size="12" text-anchor="end" fill="currentColor">${esc(k)}</text><rect x="136" y="${y+4}" width="${Math.max(2,w).toFixed(1)}" height="${rowH-10}" fill="${pal[0]}" rx="2"/><text x="${140+w}" y="${y+rowH/2+4}" font-size="12" fill="currentColor">${v}</text>`});
+  return `<svg viewBox="0 0 ${W} ${H}" role="img">${s}</svg>`;
+}
+const legend=(names,pal)=>`<div class="legend">${names.map((n,i)=>`<span><i style="background:${pal[i]}"></i>${n}</span>`).join("")}</div>`;
+function chartsHTML(W,print){
+  const pal=print?PCOL:COL;const lab=W.days.map(d=>thDate(d,{weekday:"short"})+" "+Number(d.slice(8)));
+  const sys=Object.entries(W.issuesBySys).sort((a,b)=>b[1]-a[1]);
+  const C=[
+    ["อัตราเดินเวรครบรายวัน","ร้อยละของรายการตรวจที่บันทึก แยกกะ",lineChart(lab,[{values:W.roundPct.day},{values:W.roundPct.night}],pal,"%",100),legend(["กะเช้า M","กะบ่ายดึก AN"],pal)],
+    ["ผลตรวจพบปัญหาตามระบบ","จำนวนครั้งที่กด “พบปัญหา” ในตารางเดินเวร",hbarChart(sys,[pal[1]]),""],
+    ["งาน CM เปิดใหม่ – ปิดงานรายวัน","จำนวนรายการ",barChart(lab,[{values:W.cmOpen},{values:W.cmClosed}],[pal[0],pal[2]],false),legend(["เปิดใหม่","ปิดงาน"],[pal[0],pal[2]])],
+    ["งาน PM ตามแผน","สถานะงาน PM รายวัน",barChart(lab,[{values:W.pm.done},{values:W.pm.doing},{values:W.pm.wait}],[pal[2],pal[1],pal[3]],true),legend(["เสร็จ","กำลังดำเนินการ","รอ"],[pal[2],pal[1],pal[3]])],
+    ["งานบริการและงานทำความสะอาด","จำนวนรายการรายวัน",barChart(lab,[{values:W.service},{values:W.cleaning}],[pal[0],pal[1]],false),legend(["งานบริการ","ทำความสะอาด"],[pal[0],pal[1]])],
+    ["รถจอดค้างคืนรายคืน",W.repeat.length?"จอดซ้ำ: "+W.repeat.slice(0,3).join(", "):"จำนวนรถที่ตรวจพบในอาคารต่อคืน",barChart(lab,[{values:W.parkCar},{values:W.parkMoto}],[pal[0],pal[1]],true),legend(["รถยนต์","มอเตอร์ไซค์"],[pal[0],pal[1]])]
+  ];
+  return `<div class="charts">${C.map(c=>`<div class="chart"><h3>${c[0]}</h3><div class="sub">${esc(c[1])}</div>${c[2]}${c[3]}</div>`).join("")}</div>`;
+}
+
+/* ---------- render ---------- */
+function tabsHTML(){
+  const t=[["overview","ภาพรวม"],["history","รายงานย้อนหลัง"],["weekly","สรุปรายสัปดาห์"]];
+  if(isAdmin())t.push(["edit","บันทึกข้อมูล"]);
+  return t.map(([k,l])=>`<button class="tab ${k==="edit"?"admin":""}" role="tab" data-tab="${k}" aria-selected="${view===k||(view==="day"&&k==="history")}">${l}</button>`).join("");
+}
+function render(){setTimeout(hydrate,0);
+  if(view==="edit"&&!isAdmin())view="overview";
+  $("#tabs").innerHTML=tabsHTML();
+  $("#savebar").hidden=view!=="edit";
+  if(view==="edit")renderEdit();else if(view==="history")renderHistory();else if(view==="day")renderDay();else if(view==="weekly")renderWeekly();else renderOverview();
+}
+function adminBar(){
+  if(!canWrite)return "";
+  return `<div class="rowbar" style="justify-content:flex-end;margin-bottom:6px">${clientView?`<button class="btn sm adminbtn" data-act="adminLogin">🔒 สำหรับแอดมิน</button>`:`<button class="btn sm" data-act="adminLogout">ออกจากโหมดแอดมิน</button>`}</div>`;
+}
+function bannerHTML(){
+  if(mode==="local")return `<div class="banner"><b>ไฟล์นี้ยังไม่ได้เชื่อมกับระบบกลาง</b> ข้อมูลที่บันทึกจะอยู่ในเบราว์เซอร์เครื่องนี้เท่านั้น ทีมงานและลูกค้าจะไม่เห็น กรุณาเปิดระบบจริงที่ <a href="https://claude.ai/artifact/45T87RrfkihnnyqnSCPihW" target="_blank" rel="noopener">claude.ai/artifact/45T87RrfkihnnyqnSCPihW</a></div>`;
+  
+  return "";
+}
+
+function contractHTML(){
+  const total=dayDiff(PROJECT.start,PROJECT.end)+1,t=today();
+  if(t<PROJECT.start)return `<div class="card contract"><h3>${PROJECT.name}</h3><div class="sub">เริ่มสัญญา ${thDate(PROJECT.start)}</div></div>`;
+  const dn=Math.min(total,dayDiff(PROJECT.start,t)+1),mn=Math.min(12,(+t.slice(0,4)-2026)*12+(+t.slice(5,7))-10+1);
+  let need=0,got=0;for(let i=0;i<dn;i++){const d=addDays(PROJECT.start,i);["day","night"].forEach(sh=>{if(d===t&&sh==="night"&&new Date().getHours()<17)return;need++;if(reports[rid(d,sh)])got++})}
+  const pct=Math.round(dn*100/total),cov=need?Math.round(got*100/need):0;
+  return `<div class="card contract"><div class="row" style="align-items:baseline"><h3 style="margin:0;flex:1">${PROJECT.name}</h3><span class="sub">${thDate(PROJECT.start,{day:"numeric",month:"short",year:"numeric"})} – ${thDate(PROJECT.end,{day:"numeric",month:"short",year:"numeric"})}</span></div>
+    <div class="cgrid"><div><span>ระยะสัญญา</span><b>วันที่ ${dn} <small>จาก ${total} วัน</small></b><div class="prog"><i style="width:${pct}%;background:var(--gold)"></i></div></div>
+    <div><span>เดือนที่</span><b>${mn} <small>จาก 12 เดือน</small></b><div class="sub" style="font-size:13px">เหลืออีก ${total-dn} วัน</div></div>
+    <div><span>ความครบถ้วนของรายงาน</span><b>${cov}% <small>${got}/${need} กะ</small></b><div class="prog"><i style="width:${cov}%"></i></div></div></div></div>`;
+}
+function renderOverview(){
+  const ws=mondayOf(today()),W=weekData(ws),P=weekData(addDays(ws,-7));
+  const latest=Object.values(reports).map(r=>normalize(clone(r))).sort((a,b)=>a.date===b.date?(a.shift==="night"?-1:1):(a.date<b.date?1:-1))[0];
+  let h=adminBar()+bannerHTML()+contractHTML()+`<div class="rowbar"><h1>ภาพรวมสัปดาห์นี้</h1><span class="sub">${thDate(ws,{day:"numeric",month:"long"})} – ${thDate(addDays(ws,6),{day:"numeric",month:"long",year:"numeric"})}</span></div>`+kpiHTML(kpiList(W,P));
+  if(latest){const s=roundStats(latest),H=latest.handover;
+    h+=`<div class="card"><h3>รายงานล่าสุด</h3><div class="row"><div style="flex:1;min-width:220px"><b>${thDate(latest.date)}</b> · ${SHIFTS[latest.shift]}<div class="sub">หัวหน้าเวร ${esc(H.head||"-")} · เดินเวร ${s.done}/${s.total}${s.issue?` · พบปัญหา ${s.issue}`:""} · งาน CM ${latest.sections.cm.length} · รถค้างคืน ${hasPk(latest)?pkSum(latest).total:latest.sections.parking.length} คัน</div></div>
+      <button class="btn pri" data-open="${latest.date}|${latest.shift}">ดูรายงาน</button></div></div>`;
+  }else h+=`<div class="empty"><b>ยังไม่มีรายงาน</b>${isAdmin()?"เริ่มบันทึกจากแท็บ “บันทึกข้อมูล”":"รายงานจะแสดงที่นี่เมื่อทีมงานบันทึกข้อมูล"}</div>`;
+  h+=chartsHTML(W,false);
+  h+=`<div class="card"><h3>ประเด็นที่ต้องติดตาม</h3>${W.issues.length?`<ul class="issues">${W.issues.slice(0,8).map(x=>`<li>${esc(x)}</li>`).join("")}</ul>`:`<div class="sub">ไม่มีปัญหาค้างในสัปดาห์นี้</div>`}</div>`;
+  app.innerHTML=h;
+}
+
+function renderHistory(){
+  if(!calMonth)calMonth=lastDay().slice(0,7);
+  const first=calMonth+"-01",d0=new Date(first+"T00:00:00"),lead=(d0.getDay()+6)%7,ndays=new Date(d0.getFullYear(),d0.getMonth()+1,0).getDate();
+  const firstDate=Object.values(reports).map(r=>r.date).sort()[0];let missing=0;
+  let cells="";for(let i=0;i<lead;i++)cells+=`<div class="cday out"></div>`;
+  for(let i=1;i<=ndays;i++){
+    const d=calMonth+"-"+String(i).padStart(2,"0");let dots="",any=false;
+    ["day","night"].forEach(sh=>{const r=getR(rid(d,sh));if(!r){if(isAdmin()&&firstDate&&d>=firstDate&&d>=PROJECT.start&&d<today())dots+=`<span class="dot miss">${sh==="day"?"M":"AN"}?</span>`,missing++;return}any=true;const s=roundStats(r),bad=s.issue||s.done<s.total||r.sections.cm.some(x=>x.status!=="done");dots+=`<span class="dot ${bad?"warn":"ok"}">${sh==="day"?"M":"AN"}</span>`});
+    cells+=`<button class="cday ${d===today()?"today":""}" data-day="${d}" ${any||isAdmin()?"":"disabled"} aria-label="${thDate(d)}"><b>${i}</b><span class="dots">${dots}</span></button>`;
+  }
+  app.innerHTML=adminBar()+bannerHTML()+`<div class="rowbar"><h1>รายงานย้อนหลัง</h1>
+    <button class="btn sm" data-act="mprev" aria-label="เดือนก่อน" ${calMonth<=PROJECT.start.slice(0,7)?"disabled":""}>‹</button><b>${thDate(first,{month:"long",year:"numeric"})}</b><button class="btn sm" data-act="mnext" aria-label="เดือนถัดไป" ${calMonth>=PROJECT.end.slice(0,7)?"disabled":""}>›</button>
+    ${isAdmin()?`<button class="btn sm" data-act="csvMonth">ส่งออกเดือนนี้ (Excel)</button><button class="btn sm ghost" data-act="csvAll">ส่งออกทั้งสัญญา</button>`:""}</div>
+    <div class="sub" style="margin-bottom:10px">เลือกวันที่เพื่อดูรายงาน สีเขียว = ครบและไม่พบปัญหา สีเหลือง = มีปัญหาหรือรายการค้าง${isAdmin()?` กรอบประ = ยังไม่มีรายงาน กดวันที่เพื่อบันทึกย้อนหลัง`:""}</div>
+    ${isAdmin()&&missing?`<div class="backfill">เดือนนี้ยังไม่มีรายงาน ${missing} กะ (นับตั้งแต่รายงานแรกในระบบ)</div><div style="height:10px"></div>`:""}
+    <div class="cal">${["จ","อ","พ","พฤ","ศ","ส","อา"].map(x=>`<div class="dow">${x}</div>`).join("")}${cells}</div>`;
+}
+
+function reportBody(r){
+  const H=r.handover,rs=roundStats(r),kv=(k,v)=>v?`<dt>${k}</dt><dd>${esc(v)}</dd>`:"";
+  let h=`<div class="card"><h3>ใบส่ง-รับเวร</h3><dl class="kv">${kv("หัวหน้าที่เวร",H.head)}${kv("เจ้าหน้าที่เวร",H.staff)}
+    <dt>อุปกรณ์</dt><dd>${EQUIP.map((e,i)=>`${i+1}. ${e} — ${H.equip[i]==="ok"?"ครบ":H.equip[i]==="no"?"ไม่ครบ":"ไม่ได้ระบุ"}`).join("\n")}</dd>
+    ${kv("งานแจ้งซ่อม",H.repairs)}${kv("เหตุการณ์ประจำวัน",H.events)}${kv("ผู้รับเหมาเข้าทำงาน",H.contractors)}
+    ${kv("ส่งเวร",[H.send1,H.send2].filter(Boolean).join(", "))}${kv("รับเวร",[H.recv1,H.recv2].filter(Boolean).join(", "))}${kv("วิศวกรตรวจสอบ",H.engineer)}</dl></div>
+    <div class="card"><h3>Daily Check: ตารางเดินเวร · ตรวจแล้ว ${rs.done}/${rs.total}${rs.issue?` · พบปัญหา ${rs.issue}`:""}</h3>`;
+  ROUNDS[r.shift].forEach(sl=>{h+=`<div style="font-weight:700;margin-top:10px">${sl.time}</div>`;
+    sl.items.forEach(i=>{const x=r.rounds[i.id]||{};
+      h+=`<div class="rrow ${x.status?"is-"+x.status:""}" style="padding:6px 8px"><div class="rtext">${x.status==="ok"?"✅":x.status==="issue"?"⚠️":"⬜"} ${esc(i.text)}${x.time?` <span class="fl">${esc(x.time)}</span>`:""}${x.note?`<div class="sub">${esc(x.note)}</div>`:""}</div><div></div>
+      ${(x.media||[]).length?`<div class="rmore media">${x.media.map((m,mi)=>thumb(m,mi,false)).join("")}</div>`:""}</div>`})});
+  h+=`</div>`+pkViewHTML(r);
+  SECTIONS.forEach(s=>{const items=r.sections[s.key];if(!items.length)return;const ST=stOf(s.key);
+    h+=`<div class="sec-h"><h2>${s.title}</h2><span class="count">${items.length}</span></div><div class="items">`;
+    items.forEach((it,i)=>{const st=ST[it.status];
+      h+=`<div class="vitem"><div class="num">${i+1}</div><div>${s.key==="parking"?`<div class="vtext"><b>${esc(it.plate||"ไม่ระบุทะเบียน")}</b>${it.loc?" · "+esc(it.loc):""}</div>`:""}<div class="vtext">${esc(it.text||(s.key==="parking"?"":"-"))}</div>
+      ${st?`<div style="margin-top:6px"><span class="badge ${st.cls}">${st.label}</span></div>`:""}
+      ${(it.media||[]).length?`<div class="media" style="margin-top:8px">${it.media.map((m,mi)=>thumb(m,mi,false)).join("")}</div>`:""}</div></div>`});
+    h+=`</div>`});
+  return h;
+}
+function renderDay(){
+  const d=dayView;const has={day:!!reports[rid(d,"day")],night:!!reports[rid(d,"night")]};
+  if(!has[dayShift]&&has[dayShift==="day"?"night":"day"])dayShift=dayShift==="day"?"night":"day";
+  const r=getR(rid(d,dayShift));
+  let h=adminBar()+`<div class="rowbar"><button class="btn" data-act="back">← ปฏิทิน</button><span class="spacer"></span>
+    ${r?`<button class="btn gold" data-act="vpdf">ดาวน์โหลด PDF (A4)</button>`:""}
+    ${r&&isAdmin()?`<button class="btn" data-act="vline">คัดลอกส่ง LINE</button><button class="btn pri" data-act="vedit">แก้ไข</button><button class="btn del" data-act="vdel">ลบ</button>`:""}
+    ${!r&&isAdmin()?`<button class="btn pri" data-act="vedit">${isPast(d)?"บันทึกย้อนหลังกะนี้":"บันทึกรายงานกะนี้"}</button>`:""}</div>
+    <div class="vhead"><h2>${thDate(d)}${r&&r.firstSavedAt&&backfillInfo(r)?`<span class="tag">บันทึกย้อนหลังเมื่อ ${thDate(backfillInfo(r),{day:"numeric",month:"short",year:"numeric"})}</span>`:""}</h2><div>${r?`ผู้รายงาน ${esc(r.reporter||"-")}${r.note?" · "+esc(r.note):""}`:"ยังไม่มีรายงานกะนี้"}</div></div>
+    <div class="shifttabs">${Object.entries(SHIFTS).map(([k,v])=>`<button class="chip ${has[k]?"ok":"wait"}" data-shift="${k}" aria-pressed="${k===dayShift}">${v}${has[k]?"":" · ไม่มีรายงาน"}</button>`).join("")}</div>`;
+  if(r)h+=reportBody(r);
+  app.innerHTML=h;hydrate();
+}
+
+function renderWeekly(){
+  if(!weekStart)weekStart=mondayOf(today());
+  const W=weekData(weekStart),P=weekData(addDays(weekStart,-7));
+  app.innerHTML=adminBar()+bannerHTML()+`<div class="rowbar"><h1>สรุปรายสัปดาห์</h1>
+    <button class="btn sm" data-act="wprev" aria-label="สัปดาห์ก่อน">‹</button><b>${thDate(weekStart,{day:"numeric",month:"short"})} – ${thDate(addDays(weekStart,6),{day:"numeric",month:"short",year:"numeric"})}</b><button class="btn sm" data-act="wnext" aria-label="สัปดาห์ถัดไป">›</button>
+    <button class="btn gold" data-act="wpdf">ดาวน์โหลด PDF (A4 แนวนอน)</button></div>
+    ${W.tot.reports?"":`<div class="banner">ยังไม่มีรายงานในสัปดาห์นี้</div>`}
+    ${kpiHTML(kpiList(W,P))}${chartsHTML(W,false)}
+    <div class="card"><h3>ประเด็นสัปดาห์นี้</h3>${W.issues.length?`<ul class="issues">${W.issues.slice(0,12).map(x=>`<li>${esc(x)}</li>`).join("")}</ul>`:`<div class="sub">ไม่มีปัญหาค้าง</div>`}</div>`;
+}
+
+/* ---------- edit ---------- */
+const attOff=()=>!canWrite?"disabled":"";
+function hasAnyData(r){return SECTIONS.some(s=>r.sections[s.key].length)||Object.keys(r.rounds).length||hasPk(r)}
+function renderEdit(){
+  const exist=reports[rid(draft.date,draft.shift)],rs=roundStats(draft);
+  const panes=[["handover","ใบส่ง-รับเวร",""],["rounds","Daily Check",`${rs.done}/${rs.total}`]].concat(SECTIONS.filter(s=>s.key!=="daily"&&s.key!=="parking").map(s=>[s.key,s.title,draft.sections[s.key].length||""])).concat([["parking","รถจอดค้างคืน",hasPk(draft)?pkSum(draft).total:""]]);
+  let h=adminBar()+bannerHTML()+`<section class="meta">
+    <label class="f">วันที่<span class="datenav"><button class="btn sm" data-act="dprev" aria-label="วันก่อนหน้า" ${draft.date<=PROJECT.start?"disabled":""}>‹</button><input class="inp" type="date" id="mDate" min="${PROJECT.start}" max="${lastDay()}" value="${esc(draft.date)}"><button class="btn sm" data-act="dnext" aria-label="วันถัดไป" ${draft.date>=lastDay()?"disabled":""}>›</button></span></label>
+    <label class="f">กะ<select class="inp" id="mShift">${Object.entries(SHIFTS).map(([k,v])=>`<option value="${k}" ${k===draft.shift?"selected":""}>${v}</option>`).join("")}</select></label>
+    <label class="f">ผู้รายงาน<input class="inp" id="mRep" value="${esc(draft.reporter)}" placeholder="ชื่อผู้รายงาน"></label>
+    <label class="f note">หมายเหตุประจำวัน<input class="inp" id="mNote" value="${esc(draft.note)}" placeholder="เหตุการณ์สำคัญที่ต้องการให้เห็นก่อน"></label>
+    <div class="existing">${exist?"กำลังแก้ไขรายงานที่บันทึกไว้แล้วของวันและกะนี้":"รายงานใหม่ของ "+thDate(draft.date)}${isPast(draft.date)?` <button class="btn sm ghost" data-act="dtoday">กลับไปวันนี้</button>`:""}</div></section>
+    ${isPast(draft.date)?`<div class="backfill"><b>บันทึกย้อนหลัง: ${thDate(draft.date)}</b><br>เวลาที่ระบบลงให้ในตารางเดินเวรจะใช้เวลาเริ่มของช่วงตามตาราง แก้เวลาจริงได้ในแต่ละรายการ${!exist&&backfillInfo(draft)?" รายงานนี้จะแสดงป้าย “บันทึกย้อนหลัง” พร้อมวันที่บันทึกให้ลูกค้าเห็น":""}</div>`:""}
+    <details class="imp" ${hasAnyData(draft)?"":"open"}><summary>📋 นำเข้าจากข้อความ LINE</summary>
+      <div class="sub" style="margin-bottom:8px">วางข้อความรายงานจาก LINE ทั้งข้อความ ได้ทั้งรายงานสรุปการปฏิบัติงาน (🚩Daily Check, งาน CM, งาน PM, งานบริการ) และรายงานรถจอดค้างคืน ระบบอ่านวันที่และกะจากข้อความให้เอง</div>
+      <textarea class="inp" id="lineImport" style="min-height:110px;font-size:15px" placeholder="รายงานสรุปการปฏิบัติงาน&#10;วันที่ 02/10/2026&#10;(08:00-17:00 น.) กะเช้า&#10;🚩Daily Check&#10;-ตรวจสอบระบบไฟฟ้าและแสงสว่าง ✅ปกติ&#10;🚩งาน CM&#10;-…"></textarea>
+      <div class="row" style="margin-top:8px"><button class="btn gold" data-act="lineImport">นำเข้าและบันทึก</button></div></details>
+    <nav class="seg" role="tablist">${panes.map(([k,l,c])=>`<button data-pane="${k}" aria-selected="${pane===k}">${l}${c!==""?`<em>${c}</em>`:""}</button>`).join("")}</nav>`;
+  if(pane==="handover")h+=handoverHTML();
+  else if(pane==="rounds")h+=roundsHTML(rs)+sectionHTML(SECTIONS.find(s=>s.key==="daily"));
+  else if(pane==="parking")h+=parkingHTML();
+  else h+=sectionHTML(SECTIONS.find(s=>s.key===pane));
+  app.innerHTML=h;setDirty(dirty);hydrate();
+}
+function handoverHTML(){
+  const H=draft.handover,inp=(k,ph)=>`<input class="inp" data-hf="${k}" value="${esc(H[k])}" placeholder="${ph||""}">`;
+  return `<div class="card"><h3>รายชื่อเจ้าหน้าที่เวรประจำวัน</h3><div class="grid2"><label class="f">หัวหน้าที่เวร${inp("head","ชื่อ-สกุล")}</label><label class="f">เจ้าหน้าที่เวร${inp("staff","ชื่อ-สกุล")}</label></div></div>
+    <div class="card"><h3>รายการอุปกรณ์เครื่องมือ</h3><div class="eq">${EQUIP.map((e,i)=>`<span>${i+1}. ${e}</span><span class="row">
+      <button class="chip ok" data-act="eq" data-k="${i}" data-v="ok" aria-pressed="${H.equip[i]==="ok"}">ครบ</button><button class="chip wait" data-act="eq" data-k="${i}" data-v="no" aria-pressed="${H.equip[i]==="no"}">ไม่ครบ</button></span>`).join("")}
+      </div><div class="row" style="margin-top:10px"><button class="btn sm" data-act="eqall">ครบทุกรายการ</button></div></div>
+    <div class="card"><h3>รายงานสรุปงานแจ้งซ่อม</h3><textarea class="inp big" data-hf="repairs" placeholder="งานที่ได้รับแจ้งซ่อม สถานที่ ผลการดำเนินการ">${esc(H.repairs)}</textarea></div>
+    <div class="card"><h3>รายงานสรุปเหตุการณ์ประจำวัน</h3><textarea class="inp big" data-hf="events">${esc(H.events)}</textarea></div>
+    <div class="card"><h3>รายงานสรุปผู้รับเหมาเข้าทำงาน</h3><textarea class="inp big" data-hf="contractors" placeholder="บริษัท งานที่เข้าทำ พื้นที่ เวลาเข้า-ออก">${esc(H.contractors)}</textarea></div>
+    <div class="card"><h3>ลงชื่อส่ง-รับเวร</h3><div class="grid2"><label class="f">ผู้ส่งเวร 1${inp("send1")}</label><label class="f">ผู้ส่งเวร 2${inp("send2")}</label>
+      <label class="f">ผู้รับเวร 1${inp("recv1")}</label><label class="f">ผู้รับเวร 2${inp("recv2")}</label><label class="f">วิศวกร (ตรวจสอบ)${inp("engineer")}</label></div></div>`;
+}
+function roundsHTML(rs){
+  const pct=rs.total?Math.round(rs.done*100/rs.total):0;
+  let h=`<div class="prog-wrap"><b>ตารางการเดินเวร ${SHIFTS[draft.shift]}</b> · ตรวจแล้ว ${rs.done} จาก ${rs.total}${rs.issue?` · พบปัญหา ${rs.issue}`:""}<div class="prog"><i style="width:${pct}%"></i></div></div>`;
+  ROUNDS[draft.shift].forEach(sl=>{const d=sl.items.filter(i=>(draft.rounds[i.id]||{}).status).length;
+    h+=`<div class="slot"><div class="slot-h"><span>${sl.time}</span><small>${d}/${sl.items.length}</small></div>`;
+    sl.items.forEach(i=>{const x=draft.rounds[i.id]||{},st=x.status||"";
+      h+=`<div class="rrow ${st?"is-"+st:""}" data-h="r:${i.id}"><div class="rtext">${esc(i.text)}${i.floor?`<span class="fl">ชั้น ${esc(i.floor)}</span>`:""}</div>
+        <div class="rctl"><button class="chip ok" data-act="rst" data-v="ok" aria-pressed="${st==="ok"}">ปกติ</button><button class="chip warn" data-act="rst" data-v="issue" aria-pressed="${st==="issue"}">พบปัญหา</button>
+        <button class="btn sm" data-act="att" ${attOff()} aria-label="แนบภาพ">📷</button></div>
+        ${st?`<div class="rmore"><input class="inp rtime" type="time" data-act="rtime" value="${esc(x.time||"")}" aria-label="เวลา"><input class="inp" data-act="rnote" value="${esc(x.note||"")}" placeholder="${st==="issue"?"ปัญหาที่พบ / การแก้ไข":"ค่าที่อ่านได้ / หมายเหตุ"}"></div>`:""}
+        ${(x.media||[]).length?`<div class="rmore media">${x.media.map((m,mi)=>thumb(m,mi,true)).join("")}</div>`:""}</div>`});
+    h+=`</div>`});
+  return h;
+}
+function sectionHTML(s){
+  const items=draft.sections[s.key],ST=stOf(s.key);
+  let h=`<div class="sec-h"><h2>${s.title} <small>${s.hint}</small></h2><span class="count">${items.length}</span></div><div class="items">`;
+  items.forEach((it,i)=>{
+    h+=`<div class="item" data-h="s:${s.key}:${it.id}"><div class="num">${i+1}</div><div>
+      ${s.key==="parking"?`<div class="grid2" style="margin-bottom:8px"><label class="f">ทะเบียนรถ<input class="inp" data-act="plate" value="${esc(it.plate||"")}" placeholder="เช่น 1กข 1234 กรุงเทพฯ"></label><label class="f">ตำแหน่งจอด<input class="inp" data-act="loc" value="${esc(it.loc||"")}" placeholder="เช่น ลานจอด B1 ช่อง 12"></label></div>`:""}
+      <textarea class="inp" data-act="text" placeholder="${s.key==="parking"?"หมายเหตุ":"รายละเอียดงาน"}">${esc(it.text)}</textarea>
+      <div class="row" style="margin-top:8px">${Object.entries(ST).map(([k,v])=>`<button class="chip ${v.cls}" data-act="st" data-v="${k}" aria-pressed="${it.status===k}">${v.label}</button>`).join("")}
+        <span class="spacer"></span><button class="btn" data-act="att" ${attOff()}>📷 แนบภาพ/ไฟล์</button><button class="btn ghost del" data-act="rm">ลบ</button></div>
+      ${(it.media||[]).length?`<div class="media" style="margin-top:8px">${it.media.map((m,mi)=>thumb(m,mi,true)).join("")}</div>`:""}</div></div>`});
+  return h+`</div><button class="add" data-act="add" data-s="${s.key}">+ เพิ่มรายการ ${s.title.replace("รายงาน","")}</button>`;
+}
+function thumb(m,mi,editable){
+  const x=editable?`<button class="x" data-act="rmm" data-m="${mi}" aria-label="ลบไฟล์">✕</button>`:"";
+  if(m.tmp)return `<div class="thumb">กำลังอัปโหลด…</div>`;
+  if(m.kind==="image")return `<div class="thumb"><img src="${esc(src(m))}" alt="${esc(m.name)}" data-zoom="1" ${imgAttr(m)}>${x}</div>`;
+  return `<div class="thumb"><a class="file-a" href="${esc(src(m))}" target="_blank" rel="noopener"><b>${m.kind==="video"?"🎬":"📄"}</b>${esc((m.name||"ไฟล์").slice(0,22))}</a>${x}</div>`;
+}
+
+/* ---------- LINE ---------- */
+function lineText(r){
+  r=normalize(clone(r));const H=r.handover,rs=roundStats(r);
+  let t=`📋 สรุปการปฏิบัติงานประจำวัน${backfillInfo(r)?" (บันทึกย้อนหลัง)":""}\nงานบริหารอาคาร สำนักงานงบประมาณ\n📅 ${thDate(r.date)}\n🕗 ${SHIFTS[r.shift]}\n`;
+  if(H.head||H.staff)t+=`👷 หัวหน้าที่เวร ${H.head||"-"} / เจ้าหน้าที่เวร ${H.staff||"-"}\n`;
+  if(r.note)t+=`📝 ${r.note}\n`;
+  const no=EQUIP.filter((e,i)=>H.equip[i]==="no"),ok=EQUIP.filter((e,i)=>H.equip[i]==="ok").length;
+  if(ok||no.length)t+=`🧰 อุปกรณ์ครบ ${ok}/${EQUIP.length}${no.length?` (ไม่ครบ: ${no.join(", ")})`:""}\n`;
+  t+=`\n🚩Daily Check เดินเวร ${rs.done}/${rs.total} รายการ\n`;
+  roundItems(r.shift).forEach(i=>{const x=r.rounds[i.id];if(x&&x.status==="issue")t+=`⚠️ ${i.text}${x.note?" : "+x.note:""}\n`});
+  if(H.repairs)t+=`\n🔧 งานแจ้งซ่อม\n${H.repairs.trim()}\n`;
+  if(H.events)t+=`\n📢 เหตุการณ์ประจำวัน\n${H.events.trim()}\n`;
+  if(H.contractors)t+=`\n🏗️ ผู้รับเหมาเข้าทำงาน\n${H.contractors.trim()}\n`;
+  if(hasPk(r)){const S=pkSum(r);t+=`\n🚗 รถจอดค้างคืน${r.parkingCount.time?` (ตรวจ ${r.parkingCount.time.replace(":",".")} น.)`:""}: รถยนต์ ${S.car} · มอเตอร์ไซค์ ${S.moto} · รวม ${S.total} คัน\n`}
+  SECTIONS.forEach(s=>{const items=r.sections[s.key];if(!items.length)return;const ST=stOf(s.key);t+=`\n▪️ ${s.title}\n`;
+    items.forEach((it,i)=>{const st=ST[it.status];t+=`${i+1}. ${s.key==="parking"?(it.plate||"ไม่ระบุทะเบียน")+(it.loc?" "+it.loc:"")+" ":""}${(it.text||"").trim()}${st?` ${st.icon} ${st.label}`:""}\n`})});
+  return t.trim();
+}
+async function copyText(t){
+  try{await navigator.clipboard.writeText(t);toast("คัดลอกแล้ว วางใน LINE ได้เลย");return}catch(e){}
+  const ta=document.createElement("textarea");ta.value=t;ta.style.position="fixed";ta.style.opacity="0";document.body.appendChild(ta);ta.select();
+  let ok=false;try{ok=document.execCommand("copy")}catch(e){}ta.remove();toast(ok?"คัดลอกแล้ว วางใน LINE ได้เลย":"คัดลอกอัตโนมัติไม่ได้ในหน้านี้");
+}
+
+/* ---------- PDF (A4 template) ---------- */
+function tplHeader(title,meta){
+  return `<div class="hd"><img src="${LOGO_DATA}" alt=""><div class="vr"></div><div class="co"><div class="cth">${CO_TH}</div><div class="cen">${CO_EN}</div><div class="cw">${CO_WEB}</div></div>
+    <div class="mb">${meta.map(([k,v])=>`<span>${k}</span><span>${esc(v)}</span>`).join("")}</div></div><div class="rule1"></div><div class="rule2"></div>
+    <div class="doct"><div class="t1">${esc(title)}</div><div class="t2">งานบริหารอาคาร สำนักงานงบประมาณ<br><span style="color:#5A6378;font-size:12px">อาคารสำนักงบประมาณแห่งใหม่</span></div></div>`;
+}
+
+function tplFooter(p,n){
+  return `<div class="ft"><div><b>${CO_TH}</b>${CO_EN} · ${CO_WEB}</div><div style="white-space:nowrap">พิมพ์เมื่อ ${new Date().toLocaleString("th-TH",{dateStyle:"short",timeStyle:"short"})}<span class="pn">หน้า ${p} จาก ${n}</span></div></div>`;
+}
+const docNo=r=>`DR-${r.date.replace(/-/g,"")}-${r.shift==="day"?"M":"AN"}`;
+function dailyBlocks(r){
+  const H=r.handover,rs=roundStats(r),B=[];const box=v=>v?"✓":"";
+  B.push(`<div class="meta"><div><b>หัวหน้าที่เวร</b> ${esc(H.head||"-")}</div><div><b>เจ้าหน้าที่เวร</b> ${esc(H.staff||"-")}</div><div><b>ผู้รายงาน</b> ${esc(r.reporter||"-")}</div><div><b>หมายเหตุ</b> ${esc(r.note||"-")}</div>${r.firstSavedAt&&backfillInfo(r)?`<div style="grid-column:1/-1;color:#5A6378;font-size:13px">บันทึกย้อนหลังเมื่อ ${thDate(backfillInfo(r),{day:"numeric",month:"short",year:"numeric"})}</div>`:""}</div>`);
+  B.push(`<table><tr><th>รายการอุปกรณ์เครื่องมือ</th><th style="width:70px;text-align:center">ครบ</th><th style="width:70px;text-align:center">ไม่ครบ</th></tr>${EQUIP.map((e,i)=>`<tr><td>${i+1}. ${e}</td><td class="c tok">${box(H.equip[i]==="ok")}</td><td class="c tis">${box(H.equip[i]==="no")}</td></tr>`).join("")}</table>`);
+  [["รายงานสรุปงานแจ้งซ่อม",H.repairs],["รายงานสรุปเหตุการณ์ประจำวัน",H.events],["รายงานสรุปผู้รับเหมาเข้าทำงาน",H.contractors]].forEach(([t,v])=>B.push({keep:true,h:`<div class="bar">${t}</div>`},`<div class="txt">${esc(v||"-")}</div>`));
+  B.push({keep:true,h:`<div class="bar">Daily Check: ตารางเดินเวร<span>ตรวจแล้ว ${rs.done}/${rs.total}${rs.issue?` · พบปัญหา ${rs.issue}`:""}</span></div>`});
+  ROUNDS[r.shift].forEach(sl=>B.push(`<table><tr><th style="width:132px;white-space:nowrap">${sl.time}</th><th>รายการตรวจ</th><th style="width:40px;text-align:center">ชั้น</th><th style="width:56px;text-align:center">เวลา</th><th style="width:76px;text-align:center">ผล</th></tr>
+    ${sl.items.map(i=>{const x=r.rounds[i.id]||{},imgs=(x.media||[]).filter(m=>m.kind==="image"&&!m.tmp).slice(0,3);
+      return `<tr><td colspan="2">${esc(i.text)}${x.note?`<div style="color:#5A6378;font-size:13px">หมายเหตุ: ${esc(x.note)}</div>`:""}${imgs.length?`<div class="rimg">${imgs.map(m=>`<img src="${esc(src(m))}" ${imgAttr(m)}>`).join("")}</div>`:""}</td><td class="c">${esc(i.floor||"-")}</td><td class="c">${esc(x.time||"")}</td><td class="c ${x.status==="ok"?"tok":x.status==="issue"?"tis":"tno"}">${x.status==="ok"?"ปกติ":x.status==="issue"?"พบปัญหา":"-"}</td></tr>`}).join("")}</table>`));
+  if(hasPk(r)){const P=r.parkingCount,S=pkSum(r);
+    B.push({keep:true,h:`<div class="bar">รายงานรถจอดค้างคืน<span>${P.time?`ตรวจเวลา ${P.time.replace(":",".")} น. · `:""}รถยนต์ ${S.car} · มอเตอร์ไซค์ ${S.moto} · รวม ${S.total} คัน</span></div>`});
+    B.push(`<table><tr><th>ชั้น</th><th style="width:120px;text-align:right">รถยนต์ (คัน)</th><th style="width:140px;text-align:right">มอเตอร์ไซค์ (คัน)</th><th style="width:90px;text-align:right">รวม</th></tr>
+      ${P.rows.filter(x=>num(x.car)||num(x.moto)).map(x=>`<tr><td>ชั้น ${esc(x.floor)}</td><td style="text-align:right">${num(x.car)}</td><td style="text-align:right">${num(x.moto)}</td><td style="text-align:right">${num(x.car)+num(x.moto)}</td></tr>`).join("")}
+      <tr><th>รวม</th><th style="text-align:right">${S.car}</th><th style="text-align:right">${S.moto}</th><th style="text-align:right">${S.total}</th></tr></table>`);
+    const imgs=(P.media||[]).filter(m=>m.kind==="image"&&!m.tmp).slice(0,4);
+    if(imgs.length||P.note)B.push(`<div class="it"><div class="t">${esc(P.note||"")}</div>${imgs.length?`<div class="im ${imgs.length===1?"one":""}">${imgs.map(m=>`<img src="${esc(src(m))}" ${imgAttr(m)}>`).join("")}</div>`:""}</div>`)}
+  SECTIONS.forEach(s=>{const items=r.sections[s.key];if(!items.length)return;const ST=stOf(s.key);
+    B.push({keep:true,h:`<div class="bar">${s.title}<span>${items.length} รายการ</span></div>`});
+    items.forEach((it,i)=>{const st=ST[it.status],imgs=(it.media||[]).filter(m=>m.kind==="image"&&!m.tmp).slice(0,4),oth=(it.media||[]).filter(m=>m.kind!=="image");
+      B.push(`<div class="it"><div class="n">${i+1}</div><div class="t">${s.key==="parking"?`<b>${esc(it.plate||"ไม่ระบุทะเบียน")}</b>${it.loc?" · "+esc(it.loc):""}\n`:""}${esc(it.text||"")}${st?`<div><span class="st ${st.cls}">${st.label}</span></div>`:""}${oth.length?`<div style="font-size:13px;color:#5A6378">ไฟล์แนบ: ${oth.map(o=>esc(o.name)).join(", ")}</div>`:""}</div>
+        ${imgs.length?`<div class="im ${imgs.length===1?"one":""}">${imgs.map(m=>`<img src="${esc(src(m))}" ${imgAttr(m)}>`).join("")}</div>`:""}</div>`)})});
+  B.push(`<div class="sig"><div><b>${esc([H.send1,H.send2].filter(Boolean).join(", ")||" ")}</b>ผู้ส่งเวร</div><div><b>${esc([H.recv1,H.recv2].filter(Boolean).join(", ")||" ")}</b>ผู้รับเวร</div><div><b>${esc(H.engineer||" ")}</b>วิศวกร (ตรวจสอบ)</div></div>`);
+  return B;
+}
+async function waitImgs(el){await Promise.all([...el.querySelectorAll("img")].map(im=>im.complete&&im.naturalWidth?0:new Promise(res=>{const t=setTimeout(res,8000);im.addEventListener("load",()=>{clearTimeout(t);res()},{once:true});im.addEventListener("error",()=>{clearTimeout(t);setTimeout(res,50)},{once:true})})));try{await document.fonts.ready}catch(e){}}
+const dataCache={};
+async function toData(url){if(dataCache[url])return dataCache[url];const r=await fetch(url);if(!r.ok)throw new Error("HTTP "+r.status);const d=await toDataURL(await r.blob());dataCache[url]=d;return d}
+/* inline every image as a data: URL so the canvas is never tainted and nothing depends on how /_blob/ resolves */
+async function inlineImgs(el){
+  for(const im of [...el.querySelectorAll("img")]){
+    if(im.dataset.img){try{im.src=await getImg(im.dataset.img);continue}catch(e){}}
+    if(im.src.startsWith("data:")&&im.src!==PH)continue;
+    const id=im.dataset.aid,urls=id?candidates(id):[im.getAttribute("src")];let ok=false;
+    for(const u of urls){try{im.src=await toData(u);ok=true;break}catch(e){}}
+    if(!ok)im.replaceWith(Object.assign(document.createElement("span"),{textContent:"[ภาพ]"}));
+  }
+  await waitImgs(el);
+}
+const IOS=/iPad|iPhone|iPod/.test(navigator.userAgent)||(navigator.platform==="MacIntel"&&navigator.maxTouchPoints>1);
+const SCALE=IOS?1.5:2;
+const PX2MM=25.4/96;
+async function snap(html,cls,w){
+  const st=$("#stage");st.innerHTML=`<div class="${cls}" style="width:${w}px">${html}</div>`;await inlineImgs(st);
+  const c=await html2canvas(st.firstElementChild,{scale:SCALE,useCORS:true,allowTaint:false,backgroundColor:"#ffffff",logging:false,scrollX:0,scrollY:0,windowWidth:Math.max(w,document.documentElement.clientWidth)});
+  const h=c.height/SCALE,data=c.toDataURL("image/jpeg",.9);c.width=c.height=0; /* free canvas memory (iOS limit) */
+  return{data,h};
+}
+function busy(on,text){$("#busy").classList.toggle("on",on);if(text)$("#busyText").textContent=text}
+const errText=e=>e?(e.code||e.name||"")+(e.message?" "+String(e.message).slice(0,80):""):"";
+/* ---------- data export (CSV that opens in Excel, UTF-8 with BOM) ---------- */
+function csvCell(v){v=v==null?"":String(v);return /[",\n\r]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v}
+async function exportCsv(from,to,name){
+  const rows=[["วันที่","กะ","หมวด","ลำดับ","รายการ","สถานะ","เวลา","ชั้น","รถยนต์","มอเตอร์ไซค์","หมายเหตุ","จำนวนภาพ","ผู้รายงาน","บันทึกล่าสุด"]];
+  const ids=Object.keys(reports).filter(id=>{const d=id.slice(0,10);return d>=from&&d<=to}).sort();
+  if(!ids.length){toast("ไม่มีรายงานในช่วงนี้");return}
+  ids.forEach(id=>{const r=getR(id),sh=r.shift==="day"?"กะเช้า (M)":"กะบ่ายดึก (AN)",H=r.handover,base=x=>[r.date,sh,...x,r.reporter||"",r.updatedAt?new Date(r.updatedAt).toLocaleString("th-TH"):""];
+    const add=(cat,i,text,st,time,floor,car,moto,note,nimg)=>rows.push(base([cat,i,text,st,time,floor,car,moto,note,nimg]));
+    add("ใบส่ง-รับเวร","","หัวหน้าที่เวร: "+(H.head||"-")+" / เจ้าหน้าที่เวร: "+(H.staff||"-"),"","","","","","","");
+    EQUIP.forEach((e,i)=>add("อุปกรณ์เครื่องมือ",i+1,e,H.equip[i]==="ok"?"ครบ":H.equip[i]==="no"?"ไม่ครบ":"","","","","","",""));
+    [["งานแจ้งซ่อม",H.repairs],["เหตุการณ์ประจำวัน",H.events],["ผู้รับเหมาเข้าทำงาน",H.contractors]].forEach(([k,v])=>{if(v)add(k,"",v,"","","","","","","")});
+    roundItems(r.shift).forEach((it,i)=>{const x=r.rounds[it.id];if(x&&x.status)add("ตารางเดินเวร",i+1,it.text,x.status==="ok"?"ปกติ":"พบปัญหา",x.time||"",it.floor||"","","",x.note||"",(x.media||[]).length)});
+    SECTIONS.forEach(s=>r.sections[s.key].forEach((it,i)=>{const st=(stOf(s.key)[it.status]||{}).label||"";add(s.title,i+1,it.text||"",st,"",s.key==="parking"?(it.loc||""):"","","",s.key==="parking"?(it.plate||""):"",(it.media||[]).length)}));
+    if(hasPk(r)){const P=r.parkingCount;P.rows.filter(x=>num(x.car)||num(x.moto)).forEach((x,i)=>add("รถจอดค้างคืน",i+1,"ชั้น "+x.floor,"",P.time||"",x.floor,num(x.car),num(x.moto),i===0?P.note||"":"",i===0?(P.media||[]).length:""))}
+  });
+  const csv="\uFEFF"+rows.map(r=>r.map(csvCell).join(",")).join("\r\n");
+  const blob=new Blob([csv],{type:"text/csv;charset=utf-8"});
+  if(downloads){try{await downloads.save({filename:name+".csv",data:blob});toast(`ส่งออกแล้ว ${ids.length} กะ ${rows.length-1} แถว`)}catch(e){if(e&&e.code!=="declined")toast("ส่งออกไม่สำเร็จ ("+errText(e)+")")}}
+  else{const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=name+".csv";document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),5000);toast(`ส่งออกแล้ว ${ids.length} กะ`)}
+}
+async function savePdf(pdf,name){
+  const blob=pdf.output("blob");
+  if(downloads){
+    try{await downloads.save({filename:name,data:blob});toast("ส่งไฟล์ PDF แล้ว")}
+    catch(e){if(e&&e.code==="declined")return;if(e&&e.code==="rate_limited"){toast("มีหน้าต่างบันทึกไฟล์เปิดอยู่แล้ว");return}toast("ดาวน์โหลดไม่สำเร็จ ("+errText(e)+")")}
+  }else{const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),5000)}
+}
+async function runPdf(job){
+  if(!window.html2canvas||!window.jspdf){toast("โหลดตัวสร้าง PDF ไม่สำเร็จ ลองรีเฟรชหน้า");return}
+  const sx=window.scrollX,sy=window.scrollY;busy(true,"กำลังสร้าง PDF…");window.scrollTo(0,0);
+  let step="เตรียมข้อมูล";
+  try{await job(s=>{step=s;$("#busyText").textContent="กำลังสร้าง PDF: "+s})}
+  catch(e){console.error(e);toast("สร้าง PDF ไม่สำเร็จ ขั้นตอน “"+step+"” ("+errText(e)+")")}
+  $("#stage").innerHTML="";busy(false);window.scrollTo(sx,sy);
+}
+function pdfDaily(r0){return runPdf(async step=>{
+  const r=normalize(clone(r0)),PW=794,PH=1123;
+  step("หัวกระดาษ");
+  const head=await snap(tplHeader("รายงานประจำวัน",[["เลขที่",docNo(r)],["วันที่",thDate(r.date,{day:"numeric",month:"short",year:"numeric"})],["กะ",SHIFTS[r.shift]]]),"pg",PW);
+  const foot0=await snap(tplFooter(1,1),"pg",PW);
+  const blocks=dailyBlocks(r),imgs=[];
+  for(let i=0;i<blocks.length;i++){const b=blocks[i],k=typeof b==="object";step(`เนื้อหา ${i+1}/${blocks.length}`);imgs.push(Object.assign(await snap(k?b.h:b,"bk",PW),{keep:k}))}
+  const top=head.h+12,avail=PH-top-foot0.h-12;
+  const pages=[[]];let y=0;
+  imgs.forEach((im,i)=>{let need=im.h;if(im.keep&&imgs[i+1])need+=imgs[i+1].h;if(y>0&&y+Math.min(need,avail)>avail){pages.push([]);y=0}pages.at(-1).push({im,y});y+=im.h});
+  step("จัดหน้า");
+  const {jsPDF}=window.jspdf;const pdf=new jsPDF({unit:"mm",format:"a4",orientation:"portrait",compress:true});
+  for(let p=0;p<pages.length;p++){
+    if(p)pdf.addPage();
+    pdf.addImage(head.data,"JPEG",0,0,PW*PX2MM,head.h*PX2MM);
+    for(const {im,y} of pages[p])pdf.addImage(im.data,"JPEG",0,(top+y)*PX2MM,PW*PX2MM,Math.min(im.h,avail)*PX2MM);
+    const ft=await snap(tplFooter(p+1,pages.length),"pg",PW);
+    pdf.addImage(ft.data,"JPEG",0,(PH-ft.h)*PX2MM,PW*PX2MM,ft.h*PX2MM);
+  }
+  window.__pdfPages=pages.length;
+  step("บันทึกไฟล์");busy(false);
+  await savePdf(pdf,`รายงานประจำวัน_${r.date}_${r.shift==="day"?"กะเช้า":"กะบ่ายดึก"}.pdf`);
+})}
+function pdfWeekly(ws){return runPdf(async step=>{
+  const W=weekData(ws),P=weekData(addDays(ws,-7));
+  step("สรุปและกราฟ");
+  const html=`${tplHeader("สรุปผลการดำเนินงานรายสัปดาห์",[["เลขที่",`WR-${ws.replace(/-/g,"")}`],["ช่วงวันที่",`${thDate(ws,{day:"numeric",month:"short"})} – ${thDate(addDays(ws,6),{day:"numeric",month:"short",year:"numeric"})}`],["จัดทำโดย","งานบริหารอาคาร"]])}
+    ${kpiHTML(kpiList(W,P))}${chartsHTML(W,true)}${tplFooter(1,1)}`;
+  const shot=await snap(html,"wk",1123);
+  step("จัดหน้า");
+  const {jsPDF}=window.jspdf;const pdf=new jsPDF({unit:"mm",format:"a4",orientation:"landscape",compress:true});
+  pdf.addImage(shot.data,"JPEG",0,0,297,210);
+  step("บันทึกไฟล์");busy(false);
+  await savePdf(pdf,`สรุปรายสัปดาห์_${ws}.pdf`);
+})}
+
+/* ---------- in-page confirm (window.confirm is blocked inside the artifact frame) ---------- */
+function ask(msg,yes="ยืนยัน",no="ยกเลิก"){return new Promise(res=>{const M=$("#askModal");$("#askMsg").textContent=msg;$("#askYes").textContent=yes;$("#askNo").textContent=no;M.classList.add("on");
+  const done=v=>{M.classList.remove("on");$("#askYes").onclick=$("#askNo").onclick=null;M.onkeydown=null;res(v)};
+  $("#askYes").onclick=()=>done(true);$("#askNo").onclick=()=>done(false);M.onkeydown=e=>{if(e.key==="Escape")done(false)};setTimeout(()=>$("#askYes").focus(),30)})}
+/* ---------- events ---------- */
+async function confirmLeave(){return !dirty||await ask("มีการแก้ไขที่ยังไม่บันทึก ต้องการทิ้งการแก้ไขหรือไม่?","ทิ้งการแก้ไข","กลับไปแก้ต่อ")}
+$("#tabs").addEventListener("click",async e=>{const b=e.target.closest("[data-tab]");if(!b)return;if(view==="edit"&&b.dataset.tab!=="edit"&&dirty&&!await ask("มีการแก้ไขที่ยังไม่บันทึก ออกจากหน้านี้หรือไม่?\n(ข้อมูลที่กรอกยังอยู่จนกว่าจะเปลี่ยนวันหรือกะ)","ออกจากหน้านี้","อยู่ต่อ"))return;view=b.dataset.tab;render();window.scrollTo(0,0)});
+$("#bSave").onclick=saveReport;
+$("#bLine").onclick=()=>copyText(lineText(draft));
+$("#bPdf").onclick=()=>pdfDaily(draft);
+$("#lbX").onclick=()=>$("#lb").classList.remove("on");
+$("#lb").onclick=e=>{if(e.target.id==="lb")$("#lb").classList.remove("on")};
+document.addEventListener("keydown",e=>{if(e.key==="Escape")$("#lb").classList.remove("on")});
+app.addEventListener("input",e=>{
+  {const t=e.target;if(t.dataset.pk){draft.parkingCount[t.dataset.pk]=t.value;setDirty(true);return}
+   if(t.dataset.pkf){const x=draft.parkingCount.rows[+t.dataset.i];x[t.dataset.pkf]=t.dataset.pkf==="floor"?t.value.toUpperCase():t.value.replace(/[^0-9]/g,"");pkWarn="";setDirty(true);if(t.dataset.pkf!=="floor")pkUpdateTotals();return}}
+  const t=e.target,hb=t.closest("[data-h]");
+  if(t.id==="mRep"){draft.reporter=t.value;setDirty(true);return}
+  if(t.id==="mNote"){draft.note=t.value;setDirty(true);return}
+  if(t.dataset.hf){draft.handover[t.dataset.hf]=t.value;setDirty(true);return}
+  if(!hb)return;const it=holder(hb.dataset.h,true);const a=t.dataset.act;
+  if(a==="text")it.text=t.value;else if(a==="rtime")it.time=t.value;else if(a==="rnote")it.note=t.value;else if(a==="plate")it.plate=t.value;else if(a==="loc")it.loc=t.value;else return;
+  setDirty(true);
+});
+app.addEventListener("change",async e=>{const t=e.target;
+  if(t.id==="mDate"||t.id==="mShift"){let nd=$("#mDate").value||today();if(nd<PROJECT.start||nd>PROJECT.end){toast("เลือกได้เฉพาะวันที่ในระยะสัญญา 1 ต.ค. 2569 – 30 ก.ย. 2570");nd=nd<PROJECT.start?PROJECT.start:lastDay();$("#mDate").value=nd}const ns=$("#mShift").value;if(nd>today()){toast("บันทึกล่วงหน้าไม่ได้ เลือกวันนี้หรือวันที่ผ่านมา");nd=today();$("#mDate").value=nd}
+    if(!await confirmLeave()){t.value=t.id==="mDate"?draft.date:draft.shift;return}loadDraft(nd,ns);renderEdit()}});
+app.addEventListener("click",async e=>{
+  const z=e.target.closest("[data-zoom]");if(z){$("#lbImg").src=z.currentSrc||z.src;$("#lb").classList.add("on");return}
+  const o=e.target.closest("[data-open]");if(o){const [d,s]=o.dataset.open.split("|");dayView=d;dayShift=s;view="day";render();window.scrollTo(0,0);return}
+  const dy=e.target.closest("[data-day]");if(dy){dayView=dy.dataset.day;view="day";render();window.scrollTo(0,0);return}
+  const sh=e.target.closest("[data-shift]");if(sh){dayShift=sh.dataset.shift;renderDay();return}
+  const p=e.target.closest("[data-pane]");if(p){pane=p.dataset.pane;renderEdit();return}
+  const b=e.target.closest("[data-act]");if(!b)return;
+  const act=b.dataset.act,hb=b.closest("[data-h]"),h=hb?hb.dataset.h:null;
+  switch(act){
+    case "dprev":case "dnext":case "dtoday":{const nd=act==="dtoday"?today():addDays(draft.date,act==="dprev"?-1:1);if(nd>today()||!inProject(nd)||!await confirmLeave())break;loadDraft(nd,draft.shift);renderEdit();break}
+    case "lineImport":await lineImport(($("#lineImport")||{}).value);break;
+    case "pkImport":pkImport(($("#pkPaste")||{}).value);break;
+    case "pkAdd":draft.parkingCount.rows.push({floor:"",car:"",moto:""});setDirty(true);renderEdit();{const ins=app.querySelectorAll('[data-pkf="floor"]');if(ins.length)ins[ins.length-1].focus()}break;
+    case "pkDel":{const i=+b.dataset.i,x=draft.parkingCount.rows[i];if((num(x.car)||num(x.moto))&&!await ask(`ลบชั้น ${x.floor}?`,"ลบ"))break;draft.parkingCount.rows.splice(i,1);setDirty(true);renderEdit();break}
+    case "pkLine":if(!hasPk(draft)){toast("ยังไม่มีข้อมูลรถจอดค้างคืน");break}copyText(pkText(draft));break;
+    case "adminLogin":openPin("login");break;
+    case "adminLogout":if(view==="edit"&&!await confirmLeave())break;if(view==="edit"){loadDraft(draft.date,draft.shift)}clientView=true;view="overview";setMode();render();toast("กลับสู่หน้าลูกค้าแล้ว");break;
+    case "add":{const k=b.dataset.s;draft.sections[k].push({id:uid(),text:"",status:defaultStatus(k),media:[]});setDirty(true);renderEdit();
+      const boxes=app.querySelectorAll(`.item[data-h^="s:${k}:"] ${k==="parking"?"input":"textarea"}`);if(boxes.length)boxes[k==="parking"?boxes.length-2:boxes.length-1].focus();break}
+    case "st":{const it=holder(h);it.status=it.status===b.dataset.v?"":b.dataset.v;setDirty(true);renderEdit();break}
+    case "rst":{const it=holder(h,true);if(it.status===b.dataset.v)it.status="";else{it.status=b.dataset.v;if(!it.time)it.time=autoTime(h.slice(2))}setDirty(true);renderEdit();break}
+    case "eq":{const E=draft.handover.equip,k=b.dataset.k;E[k]=E[k]===b.dataset.v?"":b.dataset.v;setDirty(true);renderEdit();break}
+    case "eqall":EQUIP.forEach((x,i)=>draft.handover.equip[i]="ok");setDirty(true);renderEdit();break;
+    case "rm":{const it=holder(h),sk=h.split(":")[1];if((it.text||it.plate||(it.media||[]).length)&&!await ask("ลบรายการนี้?","ลบ"))break;
+      (it.media||[]).forEach(m=>{if(m.id)pendingDelete.push(m.id);if(m.img)pendingDelete.push("img:"+m.img)});draft.sections[sk]=draft.sections[sk].filter(x=>x!==it);setDirty(true);renderEdit();break}
+    case "rmm":{const it=holder(h),m=it.media[+b.dataset.m];if(m.id)pendingDelete.push(m.id);if(m.img)pendingDelete.push("img:"+m.img);it.media.splice(+b.dataset.m,1);setDirty(true);renderEdit();break}
+    case "att":uploadTarget=h;$("#picker").value="";$("#picker").click();break;
+    case "mprev":case "mnext":{const d=new Date(calMonth+"-01T00:00:00");d.setMonth(d.getMonth()+(act==="mprev"?-1:1));const m=iso(d).slice(0,7);if(m<PROJECT.start.slice(0,7)||m>PROJECT.end.slice(0,7))break;calMonth=m;renderHistory();break}
+    case "csvMonth":exportCsv(calMonth+"-01",addDays(iso(new Date(+calMonth.slice(0,4),+calMonth.slice(5,7),1)),-1),`ข้อมูลรายงาน_${calMonth}`);break;
+    case "csvAll":exportCsv(PROJECT.start,PROJECT.end,"ข้อมูลรายงาน_ทั้งสัญญา_2569-2570");break;
+    case "wprev":weekStart=addDays(weekStart,-7);renderWeekly();break;
+    case "wnext":weekStart=addDays(weekStart,7);renderWeekly();break;
+    case "wpdf":pdfWeekly(weekStart);break;
+    case "back":calMonth=dayView.slice(0,7);view="history";render();break;
+    case "vline":copyText(lineText(reports[rid(dayView,dayShift)]));break;
+    case "vpdf":pdfDaily(reports[rid(dayView,dayShift)]);break;
+    case "vedit":if(!await confirmLeave())break;loadDraft(dayView,dayShift);view="edit";pane="handover";render();window.scrollTo(0,0);break;
+    case "vdel":deleteReport(rid(dayView,dayShift));break;
+  }
+});
+$("#picker").onchange=e=>{const fs=[...e.target.files];if(uploadTarget&&fs.length)addFiles(fs,uploadTarget)};
+window.addEventListener("beforeunload",e=>{if(dirty){e.preventDefault();e.returnValue=""}});
+
+/* ---------- boot ---------- */
+function setMode(){$("#mode").textContent=(mode==="cloud"?"":"ทดลอง · ")+(isAdmin()?"แอดมิน":"สำหรับลูกค้า")}
+/* ---------- admin PIN ---------- */
+const DEFAULT_PIN="102569";let pinFails=0,pinLockUntil=0,pinMode="login";
+async function sha(t){try{const b=await crypto.subtle.digest("SHA-256",new TextEncoder().encode(t));return [...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,"0")).join("")}
+  catch(e){let h=5381;for(const c of t)h=((h<<5)+h+c.charCodeAt(0))|0;return "d"+(h>>>0).toString(16)}}
+async function pinRecord(){
+  if(mode==="cloud"){try{const d=await db.doc("secure/admin").get();return d.exists?d.data():null}catch(e){return null}}
+  try{return JSON.parse(localStorage.getItem("dr-admin-pin")||"null")}catch(e){return null}}
+async function pinOk(pin){const r=await pinRecord();if(!r||!r.hash)return pin===DEFAULT_PIN;return (await sha(r.salt+":"+pin))===r.hash}
+async function pinSave(pin){const salt=uid(),rec={hash:await sha(salt+":"+pin),salt,at:Date.now()};
+  if(mode==="cloud")await db.doc("secure/admin").set(rec);else localStorage.setItem("dr-admin-pin",JSON.stringify(rec))}
+const pinInput=(id,label)=>`<label class="f">${label}<input class="inp pin" id="${id}" type="password" inputmode="numeric" pattern="[0-9]*" maxlength="6" autocomplete="off"></label>`;
+function openPin(m){pinMode=m;$("#pinErr").textContent="";
+  if(m==="login"){$("#pinTitle").textContent="เข้าสู่โหมดแอดมิน";$("#pinSub").textContent="ใส่รหัสผ่าน 6 หลัก";$("#pinFields").innerHTML=pinInput("pin1","รหัสผ่าน")}
+  else{$("#pinTitle").textContent="เปลี่ยนรหัสแอดมิน";$("#pinSub").textContent="รหัสใหม่ใช้ได้ทุกเครื่องทันที";$("#pinFields").innerHTML=pinInput("pin0","รหัสปัจจุบัน")+pinInput("pin1","รหัสใหม่ 6 หลัก")+pinInput("pin2","ยืนยันรหัสใหม่")}
+  $("#pinModal").classList.add("on");setTimeout(()=>$("#pinFields input").focus(),50)}
+function closePin(){$("#pinModal").classList.remove("on");$("#pinFields").innerHTML=""}
+async function submitPin(){
+  const err=t=>$("#pinErr").textContent=t,v=id=>($("#"+id)||{}).value||"";
+  if(Date.now()<pinLockUntil){err(`ใส่รหัสผิดหลายครั้ง รอ ${Math.ceil((pinLockUntil-Date.now())/1000)} วินาที`);return}
+  const btn=$("#pinOk");btn.disabled=true;
+  try{
+    if(pinMode==="login"){
+      if(!/^\d{6}$/.test(v("pin1"))){err("รหัสต้องเป็นตัวเลข 6 หลัก");return}
+      if(await pinOk(v("pin1"))){pinFails=0;closePin();clientView=false;view="edit";setMode();render();window.scrollTo(0,0);toast("เข้าสู่โหมดแอดมินแล้ว")}
+      else{pinFails++;if(pinFails>=5){pinLockUntil=Date.now()+60000;pinFails=0;err("ใส่รหัสผิด 5 ครั้ง ระบบล็อก 1 นาที")}else err(`รหัสไม่ถูกต้อง (เหลือ ${5-pinFails} ครั้ง)`);$("#pin1").value="";$("#pin1").focus()}
+    }else{
+      if(!(await pinOk(v("pin0")))){err("รหัสปัจจุบันไม่ถูกต้อง");return}
+      if(!/^\d{6}$/.test(v("pin1"))){err("รหัสใหม่ต้องเป็นตัวเลข 6 หลัก");return}
+      if(v("pin1")!==v("pin2")){err("รหัสใหม่ทั้งสองช่องไม่ตรงกัน");return}
+      try{await pinSave(v("pin1"));closePin();toast("เปลี่ยนรหัสแอดมินแล้ว")}catch(e){err("บันทึกรหัสไม่สำเร็จ ("+errText(e)+")")}
+    }
+  }finally{btn.disabled=false}
+}
+$("#pinOk").onclick=submitPin;$("#pinCancel").onclick=closePin;
+$("#pinModal").addEventListener("keydown",e=>{if(e.key==="Enter")submitPin();if(e.key==="Escape")closePin()});
+const defShift=()=>{const h=new Date().getHours();return h>=8&&h<17?"day":"night"};
+$("#hdrLogo").src=LOGO_DATA;
+reports=localRead();loadDraft(inProject(today())?today():lastDay(),defShift());view="overview";render();setMode();
+(async function(){
+  if(!window.claude||!window.claude.use){return}
+  const [d,a,dl,u]=await Promise.all(["db","assets","downloads","user"].map(n=>window.claude.use(n).catch(()=>null)));
+  downloads=dl;user=u;
+  if(!d){setMode();render();return}
+  db=d;assets=a;mode="cloud";reports={};
+  try{const c=await db.doc("config/blob").get();if(c.exists&&c.data().base){sharedBase=c.data().base;refreshLogo()}}catch(e){}
+  if(assets){assets.list().then(l=>{(l.assets||[]).forEach(x=>learnBase(x.id,x.url));if(view!=="edit"||!dirty)render();refreshLogo()}).catch(()=>{})}
+  try{const w=u&&await u.can("data.write");canWrite=w!==false;if(w==null&&u&&u.isOwner)canWrite=true}catch(e){}
+  view="overview";clientView=true;setMode();render();
+  db.collection("reports").orderBy("date","desc").limit(1000).onSnapshot(snap=>{
+    const next={};snap.docs.forEach(doc=>{const v=doc.data();if(v&&v.date)next[doc.id]=v});reports=next;
+    if(!dirty)loadDraft(draft.date,draft.shift);
+    if(view==="edit"&&dirty)return;render();
+  },()=>toast("การเชื่อมต่อข้อมูลขาดหาย รีเฟรชหน้าเพื่อเชื่อมใหม่"));
+})();
+})();
+</script>
+</body>
+</html>
